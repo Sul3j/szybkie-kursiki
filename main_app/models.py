@@ -3,6 +3,7 @@ from django.urls import reverse
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter 
+from ckeditor.fields import RichTextField
 import re
 from django.utils.text import slugify
 import markdown
@@ -117,6 +118,19 @@ class Lesson(models.Model):
             
         formatter = HtmlFormatter(style='default', cssclass='codehilite')
         return highlight(code, lexer, formatter)
+    
+class LessonContent(models.Model):
+    lesson = models.OneToOneField('Lesson', on_delete=models.CASCADE, related_name='content', verbose_name="Lekcja")
+    text_content = RichTextField(blank=True, null=True, verbose_name="Treść tekstowa")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data utworzenia")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Data aktualizacji")
+
+    class Meta:
+        verbose_name = "Treść lekcji"
+        verbose_name_plural = "Treści lekcji"
+
+    def __str__(self):
+        return f"Treść lekcji: {self.lesson.title}"
 
 class Quiz(models.Model):
     lesson = models.OneToOneField('Lesson', on_delete=models.CASCADE, related_name='quiz', verbose_name="Lekcja")
