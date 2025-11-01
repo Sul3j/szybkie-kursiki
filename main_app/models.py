@@ -117,3 +117,67 @@ class Lesson(models.Model):
             
         formatter = HtmlFormatter(style='default', cssclass='codehilite')
         return highlight(code, lexer, formatter)
+
+class Quiz(models.Model):
+    lesson = models.OneToOneField('Lesson', on_delete=models.CASCADE, related_name='quiz', verbose_name="Lekcja")
+    title = models.CharField(max_length=200, verbose_name="Tytuł")
+    description = models.TextField(blank=True, verbose_name="Opis")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data utworzenia")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Data aktualizacji")
+
+    class Meta:
+        verbose_name = "Quiz"
+        verbose_name_plural = "Quizy"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+class Question(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions', verbose_name="Quiz")
+    text = models.TextField(
+        verbose_name="Treść pytania",
+        help_text="Możesz używać Markdown, w tym bloków kodu. Przykład kodu: ```python\nprint('Hello')\n```"
+    )
+    order = models.PositiveIntegerField(default=0, verbose_name="Kolejność")
+    explanation = models.TextField(blank=True, verbose_name="Wyjaśnienie", help_text="Wyjaśnienie poprawnych odpowiedzi")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Pytanie"
+        verbose_name_plural = "Pytania"
+
+    def __str__(self):
+        return self.text
+
+    @property
+    def text_html(self):
+        """Renders text as HTML with markdown support, especially for code blocks"""
+        if not self.text:
+            return ""
+
+        extensions = [
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+            'markdown.extensions.fenced_code',
+        ]
+
+        html = markdown.markdown(self.text, extensions=extensions)
+
+        # Apply Pygments syntax highlighting with VS Code style
+        pattern = re.compile(r'<pre><code class="language-(.*?)">(.*?)</code></pre>', re.DOTALL)
+        html = pattern.sub(self._highlight_code, html)
+
+        return html
+
+    def _highlight_code(self, match):
+        language = match.group(1)
+        code = match.group(2)
+
+        try:
+            lexer = get_lexer_by_name(language, stripall=True)
+        except:
+            lexer = get_lexer_by_name('text', stripall=True)
+
+        formatter = HtmlFormatter(style='monokai', cssclass='codehilite')
+        return highlight(code, lexer, formatter)
