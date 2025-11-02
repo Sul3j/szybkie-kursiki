@@ -59,3 +59,93 @@ def lesson_detail(request, course_slug, lesson_slug):
         'lesson': lesson,
         'is_home_page': False
     })
+
+def quiz_detail(request, course_slug, lesson_slug):
+    lesson = get_object_or_404(Lesson, course__slug=course_slug, slug=lesson_slug)
+    quiz = get_object_or_404(Quiz, lesson=lesson)
+    questions = quiz.questions.all().prefetch_related('answers').order_by('order')
+    
+    return render(request, 'main_app/quiz_detail.html', {
+        'course': lesson.course,
+        'lesson': lesson,
+        'quiz': quiz,
+        'questions': questions,
+        'is_home_page': False
+    })
+
+def quiz_submit(request, course_slug, lesson_slug):
+    if request.method != 'POST':
+        return redirect('quiz_detail', course_slug=course_slug, lesson_slug=lesson_slug)
+    
+    lesson = get_object_or_404(Lesson, course__slug=course_slug, slug=lesson_slug)
+    quiz = get_object_or_404(Quiz, lesson=lesson)
+    questions = quiz.questions.all().prefetch_related('answers')
+    
+    total_questions = questions.count()
+    correct_answers = 0
+    results = []
+    
+    for question in questions:
+        selected_answer_id = request.POST.get(f'question_{question.id}')
+        selected_answer = None
+        is_correct = False
+        
+        if selected_answer_id:
+            try:
+                selected_answer = Answer.objects.get(id=selected_answer_id)
+                is_correct = selected_answer.is_correct
+                if is_correct:
+                    correct_answers += 1
+            except Answer.DoesNotExist:
+                pass
+        
+        correct_answer = question.answers.filter(is_correct=True).first()
+        
+        results.append({
+            'question': question,
+            'selected_answer': selected_answer,
+            'is_correct': is_correct,
+            'correct_answer': correct_answer
+        })
+    
+    score = round((correct_answers / total_questions) * 100) if total_questions > 0 else 0
+    incorrect_answers = total_questions - correct_answers 
+    
+    return render(request, 'main_app/quiz_result.html', {
+        'course': lesson.course,
+        'lesson': lesson,
+        'quiz': quiz,
+        'results': results,
+        'total_questions': total_questions,
+        'correct_answers': correct_answers,
+        'incorrect_answers': incorrect_answers, 
+        'score': score,
+        'is_home_page': False
+    })
+
+def practical_task_detail(request, course_slug, lesson_slug):
+    lesson = get_object_or_404(
+        Lesson,
+        course__slug=course_slug,
+        slug=lesson_slug,
+        course__is_active=True
+    )
+    task = get_object_or_404(PracticalTask, lesson=lesson)
+
+    pygments_css = "monokai"
+
+    return render(request, 'main_app/practical_task_detail.html', {
+        'course': lesson.course,
+        'lesson': lesson,
+        'task': task,
+        'pygments_style': pygments_css,
+        'is_home_page': False
+    })
+
+def blog_post_detail(request, slug):
+    blog_post = get_object_or_404(BlogPost, slug=slug, is_published=True)
+    return render(request, 'main_app/blog_post_detail.html', {
+        'blog_post': blog_post,
+        'is_home_page': False
+    })
+
