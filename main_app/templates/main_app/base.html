@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head style="overflow-y: hidden;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szybkie Kurski - Darmowe kursy technologiczne</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'main_app/css/custom.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <div class="logo-bg-layer"></div>
+                    <div class="code-symbol code-symbol-left">&lt;</div>
+                    <div class="code-symbol code-symbol-right">&gt;</div>
+                    <i class="fas fa-rocket rocket-icon"></i>
+                    <div class="trail-dot trail-dot-1"></div>
+                    <div class="trail-dot trail-dot-2"></div>
+                    <div class="trail-dot trail-dot-3"></div>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">Szybkie<span class="logo-accent">Kursiki</span></span>
+                    <span class="logo-sub">Nauka w ekspresowym tempie</span>
+                </div>
+            </a>
+            
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav class="nav" id="mainNav">
+                <ul class="nav-list">
+                    {% if is_home_page %}
+                        <li><a href="#mission" class="nav-link"><i class="fas fa-bullseye nav-icon-mobile"></i><span class="nav-text">Misja</span></a></li>
+                        <li><a href="#courses" class="nav-link"><i class="fas fa-graduation-cap nav-icon-mobile"></i><span class="nav-text">Kursy</span></a></li>
+                    {% endif %}
+                    <li id="theme-switch" style="display: flex;">
+                        <a href="{% url 'courses' %}" class="nav-button">
+                            Przeglądaj kursy
+                        </a>
+                        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                            <i class="fas fa-moon"></i>
+                            <i class="fas fa-sun"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand scroll-reveal-left">
+                    <div class="footer-logo-wrapper">
+                        <div class="footer-logo-icon">
+                            <div class="logo-bg-layer"></div>
+                            <div class="code-symbol code-symbol-left">&lt;</div>
+                            <div class="code-symbol code-symbol-right">&gt;</div>
+                            <i class="fas fa-rocket rocket-icon"></i>
+                            <div class="trail-dot trail-dot-1"></div>
+                            <div class="trail-dot trail-dot-2"></div>
+                            <div class="trail-dot trail-dot-3"></div>
+                        </div>
+                        <div class="footer-logo-text">
+                            <span class="footer-logo-main">Szybkie Kursiki</span>
+                            <span class="footer-logo-sub">Ucz się szybciej, osiągaj więcej</span>
+                        </div>
+                    </div>
+                    <p class="footer-text">
+                        Platforma edukacyjna z darmowymi kursami technologicznymi tworzonymi z pasją
+                    </p>
+                </div>
+
+                <div class="footer-social scroll-reveal">
+                    <h3 class="footer-social-title">Dołącz do społeczności</h3>
+                    <div class="social-links">
+                        <a href="https://youtube.com/@szybkiekursiki" target="_blank" rel="noopener noreferrer" class="social-link social-youtube">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                        </a>
+                        <a href="https://github.com/szybkiekursiki" target="_blank" rel="noopener noreferrer" class="social-link social-github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="https://discord.gg/szybkiekursiki" target="_blank" rel="noopener noreferrer" class="social-link social-discord">
+                            <i class="fab fa-discord"></i>
+                            <span>Discord</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-contact scroll-reveal-right">
+                    <h3 class="footer-contact-title">Skontaktuj się z nami</h3>
+                    <p class="footer-contact-text">
+                        Masz pytania? Chcesz współtworzyć platformę? Napisz do nas!
+                        Jesteśmy otwarci na propozycje nowych kursów i współpracę z pasjonatami technologii.
+                    </p>
+                    <a href="mailto:kontakt@szybkie-kursiki.pl" class="footer-contact-email">
+                        <i class="far fa-envelope"></i>
+                        <span>kontakt@szybkie-kursiki.pl</span>
+                    </a>
+                </div>
+
+                <div class="footer-bottom scroll-reveal">
+                    <p class="copyright">
+                        &copy; 2025 szybkie-kursiki.pl - Wszelkie prawa zastrzeżone
+                    </p>
+                    <p class="footer-author">
+                        autor: <a href="https://szymonsulejczak.com/" target="_blank" rel="noopener noreferrer">Szymon Sulejczak</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'main_app/js/script.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
