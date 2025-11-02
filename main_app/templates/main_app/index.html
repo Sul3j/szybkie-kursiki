@@ -1,1 +1,253 @@
+
 {% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero">
+    <div class="code-rain"></div>
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Zdobywaj wiedzę bez barier</h1>
+            <p class="hero-subtitle">
+                Darmowe kursy programowania, baz danych, elektroniki i sztucznej inteligencji
+                tworzone z pasją
+            </p>
+            <div class="hero-buttons">
+                <a href="#courses" class="btn btn-primary"><span class="btn-mobile-hide">Zobacz </span>Kursy</a>
+                <a href="#mission" class="btn btn-outline"><span class="btn-mobile-hide">Dowiedz się </span>Więcej</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="mission" class="mission">
+    <div class="mission-particles"></div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Nasza Misja</h2>
+            <p class="section-description">
+                Wierzymy, że pogłębianie wiedzy technicznej z zakresu technologii informatycznych nie musi być nude i mozolne, dlatego platforma ma na celu przekazywać wiedzę w sposób inspirujący daleki od monotonii.
+            </p>
+        </div>
+
+        <div class="values">
+            <div class="value-card scroll-reveal">
+                <div class="value-card-glow"></div>
+                <div class="value-icon">
+                    <i class="fas fa-lock-open"></i>
+                </div>
+                <h3 class="value-title">Dostępność</h3>
+                <p class="value-description">
+                    Wszystkie kursy są całkowicie darmowe. Treści nie są ukrywane pod płatnymi abonamentami.
+                </p>
+            </div>
+
+            <div class="value-card scroll-reveal">
+                <div class="value-card-glow"></div>
+                <div class="value-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h3 class="value-title">Jakość</h3>
+                <p class="value-description">
+                    Kursy tworzone są w sposób zwięzły i konkretny.
+                    Uczą tego, co naprawdę przydaje się w pracy.
+                </p>
+            </div>
+
+            <div class="value-card scroll-reveal">
+                <div class="value-card-glow"></div>
+                <div class="value-icon">
+                    <i class="fas fa-hands-helping"></i>
+                </div>
+                <h3 class="value-title">Wsparcie</h3>
+                <p class="value-description">
+                    Poza materiałami teoretycznymi na platformie znajdziesz, zadania praktyczne i interaktywne.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="courses" class="courses">
+    <div class="courses-particles"></div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Co znajdziesz na platformie?</h2>
+            <p class="section-description">
+                Oferujemy szeroki wybór darmowych kursów z różnych dziedzin technologii.
+                Wybierz kategorię, która Cię interesuje i zacznij naukę już dziś!
+            </p>
+        </div>
+
+        <div class="courses-grid">
+            <div class="course-card scroll-reveal">
+                <div class="course-card-glow"></div>
+                <div class="course-icon-wrapper">
+                    <i class="fas fa-code course-icon"></i>
+                </div>
+                <h3 class="course-title">Programowanie</h3>
+                <p class="course-description">
+                    Od podstaw po zaawansowane techniki. Python, JavaScript, PHP i wiele innych.
+                </p>
+                <ul class="course-features">
+                    <li class="course-feature"><i class="fas fa-check"></i><span>Web Development</span></li>
+                    <li class="course-feature"><i class="fas fa-check"></i><span>Aplikacje mobilne</span></li>
+                    <li class="course-feature"><i class="fas fa-check"></i><span>Algorytmy i struktury danych</span></li>
+                </ul>
+                <a href="{% url 'courses' %}" class="course-button">
+                    <span>Zobacz kursy</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="course-card scroll-reveal">
+                <div class="course-card-glow"></div>
+                <div class="course-icon-wrapper">
+                    <i class="fas fa-database course-icon"></i>
+                </div>
+                <h3 class="course-title">Bazy Danych</h3>
+                <p class="course-description">
+                    Zarządzanie danymi, optymalizacja zapytań i projektowanie efektywnych systemów.
+                </p>
+                <ul class="course-features">
+                    <li class="course-feature"><i class="fas fa-check"></i><span>Projektowanie baz danych</span></li>
+                    <li class="course-feature"><i class="fas fa-check"></i><span>SQL (MySQL)</span></li>
+                    <li class="course-feature"><i class="fas fa-check"></i><span>Administracja baz danych</span></li>
+                </ul>
+                <a href="{% url 'courses' %}" class="course-button">
+                    <span>Zobacz kursy</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="course-card scroll-reveal">
+                <div class="course-card-glow"></div>
+                <div class="course-icon-wrapper">
+                    <i class="fas fa-microchip course-icon"></i>
+                </div>
+                <h3 class="course-title">Elektronika & AI</h3>
+                <p class="course-description">
+                    Od RaspberryPI po zaawansowane systemy AI.
+                </p>
+                <ul class="course-features">
+                    <li class="course-feature"><i class="fas fa-check"></i><span>IoT i systemy wbudowane</span></li>
+                    <li class="course-feature"><i class="fas fa-check"></i><span>Uczenie maszynowe</span></li>
+                    <li class="course-feature"><i class="fas fa-check"></i><span>Przetwarzanie obrazu i dźwięku</span></li>
+                </ul>
+                <a href="{% url 'courses' %}" class="course-button">
+                    <span>Zobacz kursy</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="video-courses" class="video-courses">
+    <div class="video-particles"></div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Kursy Wideo</h2>
+            <p class="section-description">
+                Kompletne kursy wideo dostępne na naszym kanale YouTube
+            </p>
+        </div>
+
+        {% if video_playlists %}
+        <div class="video-slider-wrapper">
+            <button class="video-nav video-prev" aria-label="Previous videos">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="video-slider">
+                <div class="video-track">
+                    {% for playlist in video_playlists %}
+                    <a href="{{ playlist.youtube_playlist_url }}" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-card-glow"></div>
+                        <div class="video-thumbnail">
+                            <img src="{{ playlist.thumbnail.url }}" alt="{{ playlist.title }}">
+                            <div class="video-overlay">
+                                <i class="fab fa-youtube"></i>
+                                <span>Zobacz playlistę</span>
+                            </div>
+                        </div>
+                        <div class="video-body">
+                            <h3 class="video-title">{{ playlist.title }}</h3>
+                            <p class="video-description">{{ playlist.description }}</p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button class="video-nav video-next" aria-label="Next videos">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div class="video-dots"></div>
+        </div>
+        {% else %}
+        <div class="no-videos">
+            <p>Brak dostępnych kursów wideo.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section id="posts" class="posts">
+    <div class="posts-particles"></div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Posty</h2>
+            <p class="section-description">
+                Najnowsze artykuły i wpisy z naszego bloga
+            </p>
+        </div>
+
+        {% if recent_posts %}
+        <div class="posts-slider-wrapper">
+            <button class="posts-nav posts-prev" aria-label="Previous posts">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="posts-slider">
+                <div class="posts-track">
+                    {% for post in recent_posts %}
+                    <a href="{% url 'blog_post_detail' post.slug %}" class="post-card">
+                        <div class="post-card-glow"></div>
+                        <div class="post-body">
+                            <h3 class="post-title">{{ post.title }}</h3>
+                            <p class="post-description">{{ post.short_description }}</p>
+                            <div class="post-meta">
+                                <span class="post-author">
+                                    <i class="fas fa-user"></i> {{ post.author_name }}
+                                </span>
+                                <span class="post-date">
+                                    <i class="fas fa-calendar"></i> {{ post.published_date|date:"d.m.Y" }}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button class="posts-nav posts-next" aria-label="Next posts">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div class="posts-dots"></div>
+        </div>
+        {% else %}
+        <div class="no-posts">
+            <p>Brak opublikowanych postów.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'main_app/js/home.js' %}"></script>
+{% endblock %}

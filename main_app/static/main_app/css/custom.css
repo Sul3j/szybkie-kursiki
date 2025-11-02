@@ -196,7 +196,6 @@ body.menu-open {
     animation: trailBurst 1s ease-out infinite;
 }
 
-/* Logo Text */
 .logo-text {
     display: flex;
     flex-direction: column;
