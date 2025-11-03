@@ -1,0 +1,82 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'main_app/css/lesson_content.css' %}">
+<link rel="stylesheet" href="{% static 'main_app/css/practical_task.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pygments/2.11.1/styles/monokai.min.css">
+{% endblock %}
+
+{% block content %}
+<section class="practical-task">
+    <div class="task-header">
+        <div class="container">
+            <div class="header-content scroll-reveal">
+                <div class="task-header-icon">
+                    <i class="{{ course.icon }}"></i>
+                </div>
+                <h1>{{ task.title }}</h1>
+                <p class="task-description">Praktyczne ćwiczenie do wykonania</p>
+                <div class="task-meta">
+                    <span class="badge"><i class="fas fa-book"></i> {{ course.title }}</span>
+                    <span class="badge"><i class="fas fa-graduation-cap"></i> {{ lesson.title }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container task-body">
+        <div class="task-card">
+            <div class="task-content">
+                {% if task.content_html %}
+                    <div class="markdown-content">
+                        {{ task.content_html|safe }}
+                    </div>
+                {% else %}
+                    <p>Treść zadania w przygotowaniu.</p>
+                {% endif %}
+                
+                {% if task.instructions_html %}
+                    <div class="task-instructions">
+                        {{ task.instructions_html|safe }}
+                    </div>
+                {% endif %}
+                
+                {% if task.example_html %}
+                    <div class="task-example">
+                        {{ task.example_html|safe }}
+                    </div>
+                {% endif %}
+                
+                {% if task.hints_html %}
+                    <div class="task-hints">
+                        {{ task.hints_html|safe }}
+                    </div>
+                {% endif %}
+                
+                {% if task.solution_html %}
+                    <div class="task-solution">
+                        {{ task.solution_html|safe }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="task-actions">
+                <a href="{% url 'lesson_detail' course.slug lesson.slug %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Wróć do lekcji
+                </a>
+                {% if lesson.quiz %}
+                <a href="{% url 'quiz_detail' course.slug lesson.slug %}" class="btn btn-primary">
+                    <i class="fas fa-question-circle"></i> Rozwiąż quiz
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'main_app/js/lesson-detail.js' %}"></script>
+{% endblock %}

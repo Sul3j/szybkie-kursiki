@@ -1,0 +1,159 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'main_app/css/quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="quiz-result">
+    <div class="container">
+
+        <div class="quiz-header scroll-reveal">
+            <div class="quiz-header-content">
+                <div class="quiz-header-icon">
+                    <i class="{{ course.icon }}"></i>
+                </div>
+                <h1>{{ quiz.title }} - Wyniki</h1>
+                {% if quiz.description %}
+                <p class="quiz-description">{{ quiz.description }}</p>
+                {% endif %}
+                <div class="quiz-meta">
+                    <span class="quiz-badge"><i class="fas fa-book"></i> {{ course.title }}</span>
+                    <span class="quiz-badge"><i class="fas fa-graduation-cap"></i> {{ lesson.title }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="score-container scroll-reveal">
+            <div class="score-card">
+                <div class="score-value">{{ correct_answers }}/{{ total_questions }}</div>
+                <div class="score-text">poprawnych odpowiedzi</div>
+                
+                <div class="score-percentage">
+                    <span>{{ score }}%</span>
+                    <div class="progress-circle">
+                        <svg viewBox="0 0 120 120">
+                            <circle class="progress-background" cx="60" cy="60" r="54" />
+                            <circle class="progress-bar" cx="60" cy="60" r="54" 
+                                    stroke-dasharray="339.292" 
+                                    data-score="{{ score }}"
+                        </svg>
+                        <div class="progress-center"></div>
+                    </div>
+                </div>
+                
+                <div class="score-message">
+                    {% if score >= 90 %}
+                    <i class="fas fa-trophy"></i> Doskonały wynik! Jesteś mistrzem!
+                    {% elif score >= 70 %}
+                    <i class="fas fa-star"></i> Bardzo dobry wynik! Tak trzymaj!
+                    {% elif score >= 50 %}
+                    <i class="fas fa-thumbs-up"></i> Dobry wynik! Możesz jeszcze lepiej!
+                    {% else %}
+                    <i class="fas fa-lightbulb"></i> Warto powtórzyć materiał. Spróbuj ponownie!
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="results-summary scroll-reveal">
+            <div class="summary-card correct">
+                <div class="summary-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-count">{{ correct_answers }}</div>
+                    <div class="summary-label">Poprawne</div>
+                </div>
+            </div>
+
+            <div class="summary-card incorrect">
+                <div class="summary-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-count">{{ incorrect_answers }}</div>
+                    <div class="summary-label">Błędne</div>
+                </div>
+            </div>
+
+            <div class="summary-card total">
+                <div class="summary-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-count">{{ total_questions }}</div>
+                    <div class="summary-label">Wszystkie</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-list">
+            <h2 class="section-title scroll-reveal">
+                <i class="fas fa-list-check"></i> Szczegółowe wyniki
+                <span>Sprawdź, gdzie popełniłeś błędy</span>
+            </h2>
+            
+            {% for result in results %}
+            <div class="question-result">
+                <div class="question-header">
+                    <div class="question-status {% if result.is_correct %}correct{% else %}incorrect{% endif %}">
+                        {% if result.is_correct %}
+                        <i class="fas fa-check"></i>
+                        {% else %}
+                        <i class="fas fa-xmark"></i>
+                        {% endif %}
+                    </div>
+                    <div class="question-text-result">
+                        <span class="question-number">{{ forloop.counter }}.</span>
+                        <div class="question-content">{{ result.question.text_html|safe }}</div>
+                    </div>
+                </div>
+                
+                <div class="answers-result">
+                    {% for answer in result.question.answers.all %}
+                    <div class="answer-result {% if answer == result.selected_answer and not answer.is_correct %}incorrect{% endif %} {% if answer == result.correct_answer %}correct{% endif %}">
+                        <div class="answer-icon">
+                            {% if answer == result.selected_answer and not answer.is_correct %}
+                            <i class="fas fa-times"></i>
+                            {% elif answer == result.correct_answer %}
+                            <i class="fas fa-check"></i>
+                            {% endif %}
+                        </div>
+                        <div class="answer-content">
+                            <span class="answer-text">{{ answer.text }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                {% if not result.is_correct and result.question.explanation %}
+                <div class="explanation-box">
+                    <div class="explanation-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="explanation-text">
+                        {{ result.question.explanation|linebreaksbr }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="quiz-actions scroll-reveal">
+            <a href="{% url 'lesson_detail' course.slug lesson.slug %}" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Wróć do lekcji
+            </a>
+            <a href="{% url 'quiz_detail' course.slug lesson.slug %}" class="btn btn-primary">
+                <i class="fas fa-redo"></i> Spróbuj ponownie
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'main_app/js/quiz-result.js' %}"></script>
+{% endblock %}

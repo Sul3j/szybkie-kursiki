@@ -1,0 +1,36 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'main_app/css/lesson_content.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="lesson-detail">
+    <div class="container">
+        <article class="lesson-content">
+            <div class="blog-post-header">
+                <h1>{{ blog_post.title }}</h1>
+                <div class="blog-post-meta">
+                    <span><i class="fas fa-user"></i> {{ blog_post.author_name }}</span>
+                    <span><i class="fas fa-calendar"></i> {{ blog_post.published_date|date:"d.m.Y" }}</span>
+                </div>
+            </div>
+
+            <div class="markdown-content">
+                {{ blog_post.content_html|safe }}
+            </div>
+
+            <div class="lesson-navigation">
+                <a href="{% url 'home' %}" class="btn btn-outline">
+                    <i class="fas fa-home"></i> Wróć do strony głównej
+                </a>
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'main_app/js/lesson-detail.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'main_app/css/quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="quiz-detail">
+    <div class="container">
+        
+        <div class="quiz-header scroll-reveal">
+            <div class="quiz-header-content">
+                <div class="quiz-header-icon">
+                    <i class="{{ course.icon }}"></i>
+                </div>
+                <h1>{{ quiz.title }}</h1>
+                {% if quiz.description %}
+                <p class="quiz-description">{{ quiz.description }}</p>
+                {% endif %}
+                <div class="quiz-meta">
+                    <span class="quiz-badge"><i class="fas fa-book"></i> {{ course.title }}</span>
+                    <span class="quiz-badge"><i class="fas fa-graduation-cap"></i> {{ lesson.title }}</span>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" action="{% url 'quiz_submit' course.slug lesson.slug %}">
+            {% csrf_token %}
+            <div class="questions-list">
+                {% for question in questions %}
+                <div class="question-card scroll-reveal">
+                    <div class="question-text">
+                        <span class="question-number">{{ forloop.counter }}.</span>
+                        <div class="question-content">{{ question.text_html|safe }}</div>
+                    </div>
+                    <div class="answers-list">
+                        {% for answer in question.answers.all %}
+                        <div class="answer-option">
+                            <input type="radio" name="question_{{ question.id }}" id="answer_{{ answer.id }}_{{ forloop.counter }}" value="{{ answer.id }}">
+                            <label for="answer_{{ answer.id }}_{{ forloop.counter }}">
+                                <div class="custom-radio"></div>
+                                <span class="answer-text">{{ answer.text }}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="quiz-submit scroll-reveal">
+                <button type="submit" class="btn btn-primary" style="border: none;">
+                    <i class="fas fa-check-circle"></i> Sprawdź odpowiedzi
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'main_app/js/quiz-detail.js' %}"></script>
+{% endblock %}
