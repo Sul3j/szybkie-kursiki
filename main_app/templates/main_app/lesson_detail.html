@@ -1,0 +1,44 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'main_app/css/lesson_content.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="lesson-detail">
+    <div class="container">
+        <article class="lesson-content scroll-reveal-scale">
+            {% if lesson.content_markdown %}
+                <div class="markdown-content">
+                    {{ lesson.content_html|safe }}
+                </div>
+            {% else %}
+                <div class="no-content">
+                    <p>Materiały do tej lekcji są w przygotowaniu.</p>
+                </div>
+            {% endif %}
+
+            <div class="lesson-navigation">
+                <a href="{% url 'course_lessons' course.slug %}" class="btn btn-outline">
+                    <i class="fas fa-list"></i> Wróć do spisu lekcji
+                </a>
+                {% if lesson.practicaltask %}
+                    <a href="{% url 'practical_task_detail' course.slug lesson.slug %}" class="btn btn-primary">
+                        <i class="fas fa-code"></i> Zadanie praktyczne
+                    </a>
+                {% endif %}
+                {% if lesson.quiz %}
+                    <a href="{% url 'quiz_detail' course.slug lesson.slug %}" class="btn btn-primary">
+                        <i class="fas fa-question-circle"></i> Rozwiąż quiz
+                    </a>
+                {% endif %}
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'main_app/js/lesson-detail.js' %}"></script>
+{% endblock %}

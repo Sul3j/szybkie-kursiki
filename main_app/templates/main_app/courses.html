@@ -1,0 +1,79 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'main_app/css/courses.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="courses-page">
+    <div class="container">
+        <div class="section-header scroll-reveal">
+            <h2 class="section-title">Dostępne kursy</h2>
+            <p class="section-description">
+                Wybierz kurs, który Cię interesuje i zacznij naukę!
+            </p>
+        </div>
+
+        <div class="filter-container scroll-reveal">
+            <div class="filter-wrapper">
+                <div class="search-section">
+                    <div class="filter-section-title">
+                        <i class="fas fa-search"></i>
+                        Wyszukaj kurs
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Wpisz nazwę kursu lub technologię...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-section-title">
+                        <i class="fas fa-filter"></i>
+                        Kategorie
+                    </div>
+                    <div class="filter-tags">
+                        <button class="filter-tag active" data-filter="all"><span>Wszystkie</span></button>
+                        {% for tag in tags %}
+                        <button class="filter-tag" data-filter="{{ tag.slug }}"><span>{{ tag.name }}</span></button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="courses-grid">
+            {% for course in courses %}
+            <div class="course-card scroll-reveal" data-tags="{% for tag in course.tags.all %}{{ tag.slug }} {% endfor %}">
+                <div class="course-card-glow"></div>
+                <div class="course-icon-wrapper">
+                    <i class="{{ course.icon }} course-icon"></i>
+                </div>
+                <h3 class="course-title">{{ course.title }}</h3>
+                <p class="course-description">
+                    {{ course.short_description }}
+                </p>
+                <div class="course-tags">
+                    {% for tag in course.tags.all %}
+                    <span class="tag">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'course_lessons' course.slug %}" class="course-button">
+                    <span>Rozpocznij kurs</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            {% empty %}
+            <div class="course-grid-empty">
+                <p>Brak dostępnych kursów. Sprawdź później!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'main_app/js/courses.js' %}"></script>
+{% endblock %}

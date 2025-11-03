@@ -1,0 +1,63 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'main_app/css/lessons.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="course-lessons">
+    <div class="container">
+        <div class="course-header">
+            {% comment %} <a href="{% url 'courses' %}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Wszystkie kursy
+            </a> {% endcomment %}
+            <div class="course-title-container scroll-reveal-scale">
+                <div class="course-icon-container">
+                    <i class="{{ course.icon }} course-icon-large"></i>
+                </div>
+                <div class="course-title-content">
+                    <h1>{{ course.title }}</h1>
+                    <p class="course-description">{{ course.short_description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lessons-container scroll-reveal">
+            <h2 class="section-title"><i class="fas fa-list-ol"></i> Spis lekcji</h2>
+            <div class="lessons-grid">
+                {% for lesson in lessons %}
+                <a href="{{ lesson.get_absolute_url }}" class="lesson-card">
+                    <div class="lesson-number">
+                        <span>{{ forloop.counter }}</span>
+                    </div>
+                    <div class="lesson-content">
+                        <h3>{{ lesson.title }}</h3>
+                        <div class="lesson-meta">
+                            <span><i class="far fa-file-alt"></i> Materiały</span>
+                            {% if lesson.quiz %}
+                                <span><i class="fa-solid fa-question"></i> Quiz</span>
+                            {% endif %}
+                            {% if lesson.practicaltask %}
+                                <span><i class="fa-solid fa-code"></i> Zadanie praktyczne </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="lesson-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="empty-lessons">
+                    <i class="fas fa-book-open"></i>
+                    <p>Ten kurs nie ma jeszcze żadnych lekcji.</p>
+                    <a href="{% url 'courses' %}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Zobacz inne kursy
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
