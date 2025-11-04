@@ -293,6 +293,82 @@ Courses can use Font Awesome icons. Examples:
 5. Add routing in `urls.py`
 6. Create HTML template
 7. Add CSS styles and JavaScript if needed
+8. Write tests for new functionality
+
+## Testing
+
+The project includes a comprehensive test suite with 54 tests covering models, views, and complete user flows.
+
+### Running Tests
+
+**With Docker:**
+```bash
+# Run all tests
+docker-compose exec web python manage.py test main_app
+
+# Run specific test class
+docker-compose exec web python manage.py test main_app.tests.CourseModelTest
+
+# Run specific test method
+docker-compose exec web python manage.py test main_app.tests.CourseModelTest.test_course_creation
+
+# Run with verbose output
+docker-compose exec web python manage.py test main_app --verbosity=2
+```
+
+**Without Docker:**
+```bash
+# Run all tests
+python manage.py test main_app
+
+# Run specific test class
+python manage.py test main_app.tests.LessonModelTest
+
+# Run with coverage (requires coverage package)
+coverage run --source='.' manage.py test main_app
+coverage report
+```
+
+### Test Coverage
+
+The test suite (`main_app/tests.py`) includes:
+
+**Model Tests:**
+- `Tag` - creation, uniqueness, ordering
+- `Course` - creation, relationships with tags, default values
+- `Lesson` - Markdown to HTML conversion, code highlighting, special callout blocks (NOTE, WARNING, DANGER)
+- `Quiz`, `Question`, `Answer` - relationships, validation, scoring logic
+- `PracticalTask` - multi-field Markdown conversion, slug generation
+- `BlogPost` - content rendering, publication status
+- `VideoPlaylist` - image uploads, ordering
+
+**View Tests:**
+- Home page, courses list, course details
+- Lesson detail pages
+- Quiz display and submission (correct/incorrect/no answers)
+- Practical task pages
+- Blog post pages
+- Access control (inactive courses, unpublished posts return 404)
+
+**Integration Tests:**
+- Complete user flow: home → courses → lessons → quiz → results
+- Quiz scoring with mixed correct/incorrect answers
+- Tag-based course suggestions
+
+### Test Configuration
+
+- Tests use **SQLite in-memory database** for faster execution and no MySQL permission issues
+- Production uses MySQL, tests use SQLite - Django ORM handles both seamlessly
+- Configuration automatically switches based on `test` command in `app/settings.py`
+
+### Continuous Integration
+
+Tests should be run before:
+- Committing changes to version control
+- Creating pull requests
+- Deploying to production
+
+All tests must pass before merging code.
 
 ## Author
 

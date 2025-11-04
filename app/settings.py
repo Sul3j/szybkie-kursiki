@@ -61,20 +61,31 @@ WSGI_APPLICATION = "app.wsgi.application"
 
 
 # Database (MySQL)
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "HOST": os.getenv("MYSQL_HOST", "db"),
-        "PORT": int(os.getenv("MYSQL_PORT", "3306")),
-        "NAME": os.getenv("MYSQL_DATABASE", "mydatabase"),
-        "USER": os.getenv("MYSQL_USER", "myuser"),
-        "PASSWORD": os.getenv("MYSQL_PASSWORD", "mypassword"),
-        "OPTIONS": {
-            "charset": "utf8mb4",
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+import sys
+
+# Use SQLite for tests (faster and doesn't require database creation permissions)
+if 'test' in sys.argv:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "HOST": os.getenv("MYSQL_HOST", "db"),
+            "PORT": int(os.getenv("MYSQL_PORT", "3306")),
+            "NAME": os.getenv("MYSQL_DATABASE", "mydatabase"),
+            "USER": os.getenv("MYSQL_USER", "myuser"),
+            "PASSWORD": os.getenv("MYSQL_PASSWORD", "mypassword"),
+            "OPTIONS": {
+                "charset": "utf8mb4",
+                "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
