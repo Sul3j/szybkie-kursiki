@@ -4,20 +4,183 @@
 
 {% block content %}
 <section class="hero">
-    <div class="code-rain"></div>
+    <div class="hero-background">
+        <div class="hero-gradient-orb hero-gradient-orb-1"></div>
+        <div class="hero-gradient-orb hero-gradient-orb-2"></div>
+        <div class="hero-gradient-orb hero-gradient-orb-3"></div>
+        <div class="hero-grid"></div>
+    </div>
+
     <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">Zdobywaj wiedzę bez barier</h1>
-            <p class="hero-subtitle">
-                Darmowe kursy programowania, baz danych, elektroniki i sztucznej inteligencji
-                tworzone z pasją
-            </p>
-            <div class="hero-buttons">
-                <a href="#courses" class="btn btn-primary"><span class="btn-mobile-hide">Zobacz </span>Kursy</a>
-                <a href="#mission" class="btn btn-outline"><span class="btn-mobile-hide">Dowiedz się </span>Więcej</a>
+        <div class="hero-layout">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="hero-title-line">Ucz się</span>
+                    <span class="hero-title-line hero-title-gradient">Programowania</span>
+                    <span class="hero-title-line">w ekspresowym tempie</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    Kompleksowe kursy z programowania, baz danych, elektroniki i AI.
+                    Praktyczne projekty, interaktywne quizy i zadania kodowania.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#courses" class="btn btn-primary btn-hero">
+                        <span>Rozpocznij naukę</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="hero-stat-content">
+                            <div class="hero-stat-value">50+</div>
+                            <div class="hero-stat-label">Lekcji</div>
+                        </div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="hero-stat-content">
+                            <div class="hero-stat-value">50+</div>
+                            <div class="hero-stat-label">Quizów</div>
+                        </div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="hero-stat-content">
+                            <div class="hero-stat-value">10+</div>
+                            <div class="hero-stat-label">Kursów</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="vscode-window">
+                    <div class="vscode-titlebar">
+                        <div class="vscode-traffic-lights">
+                            <span class="vscode-light vscode-light-close"></span>
+                            <span class="vscode-light vscode-light-minimize"></span>
+                            <span class="vscode-light vscode-light-maximize"></span>
+                        </div>
+                        <div class="vscode-title">
+                            <span id="vscode-filename">main.py</span>
+                            <span class="vscode-title-sep">—</span>
+                            <span class="vscode-project">Szybkie Kursiki</span>
+                        </div>
+                        <div class="vscode-titlebar-end"></div>
+                    </div>
+
+                    <div class="vscode-tabs">
+                        <div class="vscode-tab vscode-tab-active">
+                            <i class="vscode-tab-icon" id="vscode-tab-icon"></i>
+                            <span class="vscode-tab-name" id="vscode-tab-name">main.py</span>
+                            <div class="vscode-tab-close">×</div>
+                        </div>
+                    </div>
+
+                    <div class="vscode-main">
+                        <div class="vscode-sidebar">
+                            <div class="vscode-sidebar-icon vscode-sidebar-icon-active">
+                                <i class="far fa-copy"></i>
+                            </div>
+                            <div class="vscode-sidebar-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="vscode-sidebar-icon">
+                                <i class="fas fa-code-branch"></i>
+                            </div>
+                            <div class="vscode-sidebar-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="vscode-sidebar-icon">
+                                <i class="fas fa-cube"></i>
+                            </div>
+                        </div>
+                        <div class="vscode-explorer">
+                            <div class="vscode-explorer-header">
+                                <span>EXPLORER</span>
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+                            <div class="vscode-explorer-content">
+                                <div class="vscode-folder">
+                                    <i class="fas fa-chevron-down"></i>
+                                    <i class="far fa-folder-open"></i>
+                                    <span>SZYBKIE KURSIKI</span>
+                                </div>
+                                <div class="vscode-file vscode-file-active" id="vscode-explorer-file">
+                                    <i class="vscode-file-icon"></i>
+                                    <span>main.py</span>
+                                </div>
+                                <div class="vscode-file">
+                                    <i class="fab fa-js"></i>
+                                    <span>app.js</span>
+                                </div>
+                                <div class="vscode-file">
+                                    <i class="fas fa-database"></i>
+                                    <span>database.sql</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vscode-editor">
+                            <div class="vscode-line-numbers" id="vscode-line-numbers">
+                                <div class="vscode-line-number">1</div>
+                                <div class="vscode-line-number">2</div>
+                                <div class="vscode-line-number">3</div>
+                                <div class="vscode-line-number">4</div>
+                                <div class="vscode-line-number">5</div>
+                                <div class="vscode-line-number">6</div>
+                                <div class="vscode-line-number">7</div>
+                                <div class="vscode-line-number">8</div>
+                                <div class="vscode-line-number">9</div>
+                                <div class="vscode-line-number">10</div>
+                            </div>
+                            <div class="vscode-code" id="vscode-code">
+                            </div>
+                            <div class="vscode-minimap">
+                                <div class="vscode-minimap-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vscode-statusbar">
+                        <div class="vscode-statusbar-left">
+                            <span class="vscode-statusbar-item">
+                                <i class="fas fa-code-branch"></i> main
+                            </span>
+                            <span class="vscode-statusbar-item">
+                                <i class="fas fa-times-circle"></i> 0
+                                <i class="fas fa-exclamation-triangle"></i> 0
+                            </span>
+                        </div>
+                        <div class="vscode-statusbar-right">
+                            <span class="vscode-statusbar-item">UTF-8</span>
+                            <span class="vscode-statusbar-item">LF</span>
+                            <span class="vscode-statusbar-item" id="vscode-language">Python</span>
+                            <span class="vscode-statusbar-item">
+                                <i class="fas fa-check-circle"></i> Prettier
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <a href="#mission" class="hero-scroll-indicator">
+        <div class="mouse-scroll">
+            <div class="mouse">
+                <div class="mouse-wheel"></div>
+            </div>
+        </div>
+    </a>
 </section>
 
 <section id="mission" class="mission">
@@ -249,5 +412,6 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'main_app/js/hero.js' %}"></script>
 <script src="{% static 'main_app/js/home.js' %}"></script>
 {% endblock %}

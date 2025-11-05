@@ -1,4 +1,3 @@
-// Code Rain Effect
 document.addEventListener('DOMContentLoaded', function() {
     const codeRain = document.querySelector('.code-rain');
 
