@@ -171,4 +171,31 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Scroll Progress Bar
+    const scrollProgressBar = document.getElementById('scrollProgressBar');
+
+    if (scrollProgressBar) {
+        function updateScrollProgress() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+            // Calculate scroll percentage
+            const scrollableHeight = documentHeight - windowHeight;
+            const scrollPercentage = (scrollTop / scrollableHeight) * 100;
+
+            // Update progress bar width
+            scrollProgressBar.style.width = scrollPercentage + '%';
+        }
+
+        // Update on scroll
+        window.addEventListener('scroll', updateScrollProgress);
+
+        // Update on load
+        updateScrollProgress();
+
+        // Update on resize (in case content changes)
+        window.addEventListener('resize', updateScrollProgress);
+    }
 });

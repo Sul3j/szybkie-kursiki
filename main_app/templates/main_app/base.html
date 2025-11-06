@@ -129,6 +129,12 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    {% if is_home_page %}
+    <div class="scroll-progress-container">
+        <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
+    {% endif %}
+
     <script src="{% static 'main_app/js/script.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>

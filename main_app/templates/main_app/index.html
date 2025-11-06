@@ -327,16 +327,37 @@
                     {% for playlist in video_playlists %}
                     <a href="{{ playlist.youtube_playlist_url }}" target="_blank" rel="noopener noreferrer" class="video-card">
                         <div class="video-card-glow"></div>
+                        <div class="video-card-gradient"></div>
+
                         <div class="video-thumbnail">
                             <img src="{{ playlist.thumbnail.url }}" alt="{{ playlist.title }}">
-                            <div class="video-overlay">
+                            <div class="video-gradient-overlay"></div>
+
+                            <div class="video-badge">
                                 <i class="fab fa-youtube"></i>
-                                <span>Zobacz playlistę</span>
+                                <span>Playlista</span>
+                            </div>
+
+                            <div class="video-overlay">
+                                <span class="video-overlay-text">Zobacz playlistę na YouTube</span>
+                                <i class="fas fa-arrow-right"></i>
                             </div>
                         </div>
+
                         <div class="video-body">
                             <h3 class="video-title">{{ playlist.title }}</h3>
                             <p class="video-description">{{ playlist.description }}</p>
+
+                            <div class="video-footer">
+                                <div class="video-platform">
+                                    <i class="fab fa-youtube"></i>
+                                    <span>YouTube</span>
+                                </div>
+                                <div class="video-cta">
+                                    <span>Oglądaj teraz</span>
+                                    <i class="fas fa-external-link-alt"></i>
+                                </div>
+                            </div>
                         </div>
                     </a>
                     {% endfor %}
@@ -378,16 +399,38 @@
                     {% for post in recent_posts %}
                     <a href="{% url 'blog_post_detail' post.slug %}" class="post-card">
                         <div class="post-card-glow"></div>
+                        <div class="post-card-gradient"></div>
+
+                        <div class="post-header">
+                            <div class="post-badge">
+                                <i class="fas fa-newspaper"></i>
+                                <span>Artykuł</span>
+                            </div>
+                            <div class="post-bookmark">
+                                <i class="far fa-bookmark"></i>
+                            </div>
+                        </div>
+
                         <div class="post-body">
                             <h3 class="post-title">{{ post.title }}</h3>
                             <p class="post-description">{{ post.short_description }}</p>
-                            <div class="post-meta">
-                                <span class="post-author">
-                                    <i class="fas fa-user"></i> {{ post.author_name }}
-                                </span>
-                                <span class="post-date">
-                                    <i class="fas fa-calendar"></i> {{ post.published_date|date:"d.m.Y" }}
-                                </span>
+
+                            <div class="post-footer">
+                                <div class="post-meta">
+                                    <span class="post-author">
+                                        <i class="fas fa-user"></i>
+                                        {{ post.author_name }}
+                                    </span>
+                                    <span class="post-date">
+                                        <i class="fas fa-calendar"></i>
+                                        {{ post.published_date|date:"d M Y" }}
+                                    </span>
+                                </div>
+
+                                <div class="post-read-more">
+                                    <span>Czytaj więcej</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
                             </div>
                         </div>
                     </a>
