@@ -5,10 +5,19 @@ def home(request):
     featured_courses = Course.objects.filter(is_active=True).order_by('-created_at')[:3]
     recent_posts = BlogPost.objects.filter(is_published=True).order_by('-published_date')[:6]
     video_playlists = VideoPlaylist.objects.filter(is_active=True).order_by('order', '-created_at')[:6]
+
+    # Calculate real statistics for hero section
+    total_courses = Course.objects.filter(is_active=True).count()
+    total_lessons = Lesson.objects.filter(course__is_active=True).count()
+    total_quizzes = Quiz.objects.filter(lesson__course__is_active=True).count()
+
     return render(request, 'main_app/index.html', {
         'featured_courses': featured_courses,
         'recent_posts': recent_posts,
         'video_playlists': video_playlists,
+        'total_courses': total_courses,
+        'total_lessons': total_lessons,
+        'total_quizzes': total_quizzes,
         'is_home_page': True
     })
 
