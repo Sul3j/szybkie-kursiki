@@ -42,13 +42,127 @@
 
 .markdown-content h1 {
     font-size: 2.2rem;
-    margin: 2rem 0 1.5rem;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    padding-bottom: 0.5rem;
+    font-weight: 800;
+    margin: 0 0 3rem 0;
+    padding: 1.8rem 3rem 1.8rem 2rem;
     position: relative;
+    line-height: 1.3;
+    letter-spacing: -0.03em;
+    color: #1e293b;
+
+    /* Glass effect background */
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.1) 100%);
+
+    /* Enhanced glassmorphism blur */
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+
+    /* Beautiful glass border with gradient */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+
+    /* Multi-layered glass shadows */
+    box-shadow:
+        /* Outer glow */
+        0 8px 32px rgba(67, 97, 238, 0.15),
+        0 20px 60px rgba(67, 97, 238, 0.1),
+        /* Glass reflection */
+        inset 0 1px 2px rgba(255, 255, 255, 0.9),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.2),
+        /* Subtle inner glow */
+        inset 0 0 60px rgba(255, 255, 255, 0.05);
+
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-left: 1.8rem;
+    overflow: hidden;
+}
+
+/* Glass shimmer effect */
+.markdown-content h1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 100%
+    );
+    transition: left 0.7s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.markdown-content h1::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg,
+        #4361ee 0%,
+        #4895ef 40%,
+        #4cc9f0 80%,
+        #7dd3fc 100%);
+    border-radius: 20px 0 0 20px;
+    box-shadow:
+        0 0 25px rgba(67, 97, 238, 0.6),
+        0 0 50px rgba(72, 149, 239, 0.3),
+        inset 1px 0 0 rgba(255, 255, 255, 0.5);
+    z-index: 2;
+}
+
+.markdown-content h1:hover {
+    transform: translateY(-5px) scale(1.01);
+
+    /* Enhanced glass background on hover */
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.35) 0%,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(255, 255, 255, 0.2) 100%);
+
+    /* Stronger glass border */
+    border: 1px solid rgba(255, 255, 255, 0.6);
+
+    /* Enhanced glow and glass shadows */
+    box-shadow:
+        /* Stronger outer glow */
+        0 12px 48px rgba(67, 97, 238, 0.25),
+        0 25px 80px rgba(67, 97, 238, 0.15),
+        /* Enhanced glass reflections */
+        inset 0 2px 4px rgba(255, 255, 255, 1),
+        inset 0 -2px 4px rgba(255, 255, 255, 0.3),
+        /* Brighter inner glow */
+        inset 0 0 80px rgba(255, 255, 255, 0.08);
+}
+
+/* Shimmer animation on hover */
+.markdown-content h1:hover::before {
+    left: 100%;
+}
+
+.markdown-content h1:hover::after {
+    box-shadow:
+        0 0 35px rgba(67, 97, 238, 0.8),
+        0 0 70px rgba(72, 149, 239, 0.5),
+        0 0 100px rgba(76, 201, 240, 0.3),
+        inset 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
+@keyframes floatIcon {
+    0%, 100% {
+        transform: translateY(-50%) translateX(0);
+    }
+    50% {
+        transform: translateY(-50%) translateX(3px);
+    }
 }
 
 .markdown-content h2 {
@@ -310,9 +424,9 @@
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #cbd5e1;
+    color: #64748b;
     padding: 0.5rem;
     border-radius: 6px;
     cursor: pointer;
@@ -327,7 +441,8 @@
     width: 36px;
     height: 36px;
     z-index: 10;
-    opacity: 0.7;
+    opacity: 0.6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .codehilite:hover .copy-btn {
@@ -335,9 +450,11 @@
 }
 
 .codehilite .copy-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 1);
+    border-color: #94a3b8;
+    color: #475569;
     transform: scale(1.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .codehilite .copy-btn:active {
@@ -586,6 +703,78 @@
 
 .dark-mode .markdown-content {
     color: #e5e7eb;
+}
+
+.dark-mode .markdown-content h1 {
+    color: #f1f5f9;
+
+    /* Dark mode glass effect */
+    background: linear-gradient(135deg,
+        rgba(30, 41, 59, 0.4) 0%,
+        rgba(30, 41, 59, 0.3) 50%,
+        rgba(30, 41, 59, 0.2) 100%);
+
+    /* Enhanced dark mode blur */
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+
+    /* Dark glass border */
+    border: 1px solid rgba(148, 163, 184, 0.2);
+
+    /* Dark mode glass shadows */
+    box-shadow:
+        /* Outer glow */
+        0 8px 32px rgba(72, 149, 239, 0.2),
+        0 20px 60px rgba(0, 0, 0, 0.6),
+        /* Glass reflections */
+        inset 0 1px 2px rgba(255, 255, 255, 0.1),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.05),
+        /* Inner glow */
+        inset 0 0 60px rgba(72, 149, 239, 0.05);
+}
+
+.dark-mode .markdown-content h1::after {
+    background: linear-gradient(180deg,
+        #4895ef 0%,
+        #4cc9f0 40%,
+        #7dd3fc 80%,
+        #a5f3fc 100%);
+    box-shadow:
+        0 0 30px rgba(72, 149, 239, 0.7),
+        0 0 60px rgba(76, 201, 240, 0.4),
+        inset 1px 0 0 rgba(255, 255, 255, 0.3);
+}
+
+.dark-mode .markdown-content h1:hover {
+    transform: translateY(-5px) scale(1.01);
+
+    /* Enhanced dark glass on hover */
+    background: linear-gradient(135deg,
+        rgba(30, 41, 59, 0.6) 0%,
+        rgba(30, 41, 59, 0.5) 50%,
+        rgba(30, 41, 59, 0.4) 100%);
+
+    /* Stronger dark border */
+    border: 1px solid rgba(148, 163, 184, 0.4);
+
+    /* Enhanced dark mode glow */
+    box-shadow:
+        /* Stronger glow */
+        0 12px 48px rgba(72, 149, 239, 0.3),
+        0 25px 80px rgba(0, 0, 0, 0.8),
+        /* Enhanced reflections */
+        inset 0 2px 4px rgba(255, 255, 255, 0.15),
+        inset 0 -2px 4px rgba(255, 255, 255, 0.08),
+        /* Brighter inner glow */
+        inset 0 0 80px rgba(72, 149, 239, 0.08);
+}
+
+.dark-mode .markdown-content h1:hover::after {
+    box-shadow:
+        0 0 40px rgba(72, 149, 239, 0.9),
+        0 0 80px rgba(76, 201, 240, 0.6),
+        0 0 120px rgba(125, 211, 252, 0.4),
+        inset 1px 0 0 rgba(255, 255, 255, 0.5);
 }
 
 .dark-mode .markdown-content h2,
@@ -842,6 +1031,14 @@
 
     .markdown-content h1 {
         font-size: 1.8rem;
+        padding: 2rem 2rem 2rem 1.6rem;
+        margin-bottom: 2.5rem;
+        border-radius: 18px;
+    }
+
+    .markdown-content h1::after {
+        width: 5px;
+        border-radius: 18px 0 0 18px;
     }
 
     .markdown-content h2 {
@@ -951,7 +1148,15 @@
     }
 
     .markdown-content h1 {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
+        padding: 1.8rem 1.5rem 1.8rem 1.4rem;
+        margin-bottom: 2rem;
+        border-radius: 16px;
+    }
+
+    .markdown-content h1::after {
+        width: 4px;
+        border-radius: 16px 0 0 16px;
     }
 
     .markdown-content h2 {
