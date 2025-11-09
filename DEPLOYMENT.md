@@ -242,49 +242,166 @@ Otwórz przeglądarkę i przejdź do `http://twoja-domena.com` lub `http://twoj-
 
 ## SSL/HTTPS z Let's Encrypt
 
-### Krok 1: Zatrzymaj nginx tymczasowo
+**WAŻNE:** Upewnij się, że Twoja domena już wskazuje na adres IP serwera VPS przed rozpoczęciem tego procesu.
+
+### Krok 1: Weryfikacja statusu kontenerów
 
 ```bash
-docker compose -f docker-compose.production.yml stop nginx
+# Sprawdź czy wszystkie kontenery działają
+docker compose -f docker-compose.production.yml ps
+
+# Sprawdź logi nginx (powinien działać bez błędów w trybie HTTP)
+docker compose -f docker-compose.production.yml logs nginx
 ```
 
 ### Krok 2: Uzyskaj certyfikat SSL
 
+Nginx już działa w trybie HTTP i obsługuje ACME challenge, więc możesz od razu uzyskać certyfikat:
+
 ```bash
-# Zamień twoja-domena.com i email@example.com na swoje dane
+# Zamień szybkie-kursiki.pl i contact@szymonsulejczak.com na swoje dane
 docker compose -f docker-compose.production.yml run --rm certbot certonly \
   --webroot \
   --webroot-path=/var/www/certbot \
-  -d twoja-domena.com \
-  -d www.twoja-domena.com \
-  --email email@example.com \
+  -d szybkie-kursiki.pl \
+  -d www.szybkie-kursiki.pl \
+  --email contact@szymonsulejczak.com \
   --agree-tos \
   --no-eff-email
 ```
 
-### Krok 3: Aktualizacja konfiguracji nginx
+Jeśli wszystko pójdzie dobrze, zobaczysz komunikat: `Successfully received certificate`.
+
+### Krok 3: Weryfikacja uzyskanych certyfikatów
+
+```bash
+# Sprawdź czy certyfikaty zostały utworzone
+docker compose -f docker-compose.production.yml exec nginx ls -la /etc/letsencrypt/live/szybkie-kursiki.pl/
+```
+
+Powinieneś zobaczyć pliki:
+- `fullchain.pem`
+- `privkey.pem`
+- `cert.pem`
+- `chain.pem`
+
+### Krok 4: Aktualizacja konfiguracji nginx dla HTTPS
 
 ```bash
 nano nginx/conf.d/app.conf
 ```
 
-1. Odkomentuj linie z certyfikatami SSL (linie zaczynające się od `# ssl_`)
-2. Zamień `yourdomain.com` na swoją domenę
-3. Zakomentuj lub usuń sekcję "Temporary HTTP-only server"
+Wykonaj następujące zmiany:
 
-### Krok 4: Restart nginx
+1. **Zakomentuj** aktualny serwer HTTP (linie 5-39)
+2. **Odkomentuj** serwer HTTPS (linie 42-87)
+3. **Odkomentuj** przekierowanie HTTP → HTTPS (linie 90-101)
 
-```bash
-docker compose -f docker-compose.production.yml up -d nginx
+Po edycji, plik powinien wyglądać tak:
+
+```nginx
+upstream django {
+    server web:8000;
+}
+
+# Redirect HTTP to HTTPS
+server {
+    listen 80;
+    server_name szybkie-kursiki.pl www.szybkie-kursiki.pl;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# HTTPS Server
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name szybkie-kursiki.pl www.szybkie-kursiki.pl;
+
+    # SSL Configuration
+    ssl_certificate /etc/letsencrypt/live/szybkie-kursiki.pl/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/szybkie-kursiki.pl/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    # ... reszta konfiguracji ...
+}
 ```
 
-### Krok 5: Weryfikacja SSL
+### Krok 5: Zatwierdź zmiany i wypchnij do repozytorium
 
-Otwórz `https://twoja-domena.com` w przeglądarce i sprawdź czy certyfikat działa.
+```bash
+# Dodaj zmiany do git
+git add nginx/conf.d/app.conf
+git commit -m "Enable HTTPS configuration"
+git push origin main
+```
+
+Alternatywnie, możesz ręcznie zrestartować nginx:
+
+```bash
+# Przetestuj konfigurację
+docker compose -f docker-compose.production.yml exec nginx nginx -t
+
+# Jeśli test się powiedzie, zrestartuj nginx
+docker compose -f docker-compose.production.yml restart nginx
+```
+
+### Krok 6: Weryfikacja SSL
+
+1. Otwórz `https://szybkie-kursiki.pl` w przeglądarce
+2. Sprawdź czy pojawia się ikona kłódki (certyfikat SSL)
+3. Sprawdź czy przekierowanie z HTTP działa: `http://szybkie-kursiki.pl` → `https://szybkie-kursiki.pl`
+
+### Krok 7: Testowanie konfiguracji SSL
+
+Możesz przetestować bezpieczeństwo SSL używając:
+- [SSL Labs](https://www.ssllabs.com/ssltest/)
+- Powinien uzyskać ocenę A lub A+
 
 ### Automatyczne odnawianie certyfikatów
 
-Certyfikaty będą automatycznie odnawiane przez kontener certbot co 12 godzin.
+Certyfikaty będą automatycznie odnawiane przez kontener certbot co 12 godzin. Po odnowieniu, nginx automatycznie załaduje nowe certyfikaty.
+
+### Rozwiązywanie problemów z SSL
+
+**Problem: "Connection refused" podczas uzyskiwania certyfikatu**
+```bash
+# Sprawdź czy nginx działa
+docker compose -f docker-compose.production.yml ps nginx
+
+# Sprawdź czy port 80 jest dostępny
+curl -I http://szybkie-kursiki.pl/.well-known/acme-challenge/test
+```
+
+**Problem: Nginx nie startuje po włączeniu SSL**
+```bash
+# Sprawdź logi nginx
+docker compose -f docker-compose.production.yml logs nginx
+
+# Częste przyczyny:
+# - Brak pliku options-ssl-nginx.conf (rozwiązane przez certbot)
+# - Błędna ścieżka do certyfikatów
+# - Niepoprawna składnia konfiguracji
+```
+
+**Problem: Brak pliku options-ssl-nginx.conf**
+
+Certbot tworzy ten plik automatycznie podczas uzyskiwania certyfikatu. Jeśli go brakuje:
+
+```bash
+# Sprawdź czy plik istnieje
+docker compose -f docker-compose.production.yml exec nginx ls -la /etc/letsencrypt/
+
+# Jeśli brakuje, uruchom certbot ponownie
+docker compose -f docker-compose.production.yml run --rm certbot certonly --webroot --webroot-path=/var/www/certbot -d szybkie-kursiki.pl -d www.szybkie-kursiki.pl --email contact@szymonsulejczak.com --agree-tos --no-eff-email
+```
 
 ---
 
