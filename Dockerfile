@@ -19,8 +19,12 @@ RUN pip install --upgrade pip \
 
 COPY . /app
 
+# Collect static files
+RUN python manage.py collectstatic --noinput || true
+
 EXPOSE 8000
 
-CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+# Use gunicorn for production
+CMD ["sh", "-c", "python manage.py migrate && gunicorn app.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120"]
 
 

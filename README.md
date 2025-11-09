@@ -370,6 +370,36 @@ Tests should be run before:
 
 All tests must pass before merging code.
 
+## Production Deployment
+
+This project is configured for production deployment on VPS with CI/CD using GitHub Actions.
+
+### Quick Deployment Guide
+
+1. **Prepare VPS**: Follow the comprehensive guide in [DEPLOYMENT.md](DEPLOYMENT.md)
+2. **Configure GitHub Secrets**: Add required secrets to your GitHub repository
+3. **Push to main branch**: Automatic deployment will trigger
+
+### Deployment Files
+
+- `docker-compose.production.yml` - Production Docker configuration with Nginx
+- `deploy.sh` - Deployment script executed on VPS
+- `.github/workflows/deploy.yml` - GitHub Actions CI/CD workflow
+- `nginx/` - Nginx configuration for reverse proxy and SSL
+- `init-ssl.sh` - Helper script for Let's Encrypt SSL setup
+
+### Key Features
+
+- **Automatic deployments** via GitHub Actions on push to main
+- **Docker containerization** with Gunicorn WSGI server
+- **Nginx reverse proxy** with SSL/HTTPS support
+- **Let's Encrypt** automatic SSL certificate renewal
+- **Zero-downtime deployments** with health checks
+- **Static files** served via WhiteNoise
+- **MySQL database** with persistent volumes
+
+### For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
+
 ## Author
 
 - Szymon Sulejczak

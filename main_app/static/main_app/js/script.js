@@ -1,4 +1,3 @@
-const themeToggle = document.getElementById('themeToggle');
 const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
 function setTheme(isDark) {
@@ -18,7 +17,7 @@ function toggleTheme() {
 
 function initializeTheme() {
     const savedTheme = localStorage.getItem('theme');
-    
+
     if (savedTheme === 'dark') {
         setTheme(true);
     } else if (savedTheme === 'light') {
@@ -28,12 +27,15 @@ function initializeTheme() {
     }
 }
 
-if (themeToggle) {
-    themeToggle.addEventListener('click', toggleTheme);
-}
+// Initialize theme immediately (before DOM loads) to prevent flash
+initializeTheme();
 
 document.addEventListener('DOMContentLoaded', function() {
-    initializeTheme();
+    // Add theme toggle event listener
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     

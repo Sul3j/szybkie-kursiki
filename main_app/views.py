@@ -101,10 +101,16 @@ def lesson_detail(request, course_slug, lesson_slug):
 def quiz_detail(request, course_slug, lesson_slug):
     # Optimize with select_related and prefetch_related
     lesson = get_object_or_404(
-        Lesson.objects.select_related('course', 'quiz'),
+        Lesson.objects.select_related('course'),
         course__slug=course_slug,
         slug=lesson_slug
     )
+
+    # Check if quiz exists
+    if not hasattr(lesson, 'quiz'):
+        from django.http import Http404
+        raise Http404("Quiz does not exist for this lesson")
+
     quiz = lesson.quiz
     questions = quiz.questions.prefetch_related('answers').order_by('order')
 
@@ -122,10 +128,16 @@ def quiz_submit(request, course_slug, lesson_slug):
 
     # Optimize with select_related
     lesson = get_object_or_404(
-        Lesson.objects.select_related('course', 'quiz'),
+        Lesson.objects.select_related('course'),
         course__slug=course_slug,
         slug=lesson_slug
     )
+
+    # Check if quiz exists
+    if not hasattr(lesson, 'quiz'):
+        from django.http import Http404
+        raise Http404("Quiz does not exist for this lesson")
+
     quiz = lesson.quiz
     questions = quiz.questions.prefetch_related('answers').order_by('order')
 
@@ -179,11 +191,17 @@ def quiz_submit(request, course_slug, lesson_slug):
 def practical_task_detail(request, course_slug, lesson_slug):
     # Optimize with select_related
     lesson = get_object_or_404(
-        Lesson.objects.select_related('course', 'practicaltask'),
+        Lesson.objects.select_related('course'),
         course__slug=course_slug,
         slug=lesson_slug,
         course__is_active=True
     )
+
+    # Check if practical task exists
+    if not hasattr(lesson, 'practicaltask'):
+        from django.http import Http404
+        raise Http404("Practical task does not exist for this lesson")
+
     task = lesson.practicaltask
 
     pygments_css = "monokai"
@@ -202,4 +220,3 @@ def blog_post_detail(request, slug):
         'blog_post': blog_post,
         'is_home_page': False
     })
-

@@ -1,4 +1,4 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.utils.text import slugify
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -7,6 +7,12 @@ from .models import (
     Tag, Course, Lesson, LessonContent, Quiz, Question, Answer,
     PracticalTask, BlogPost, VideoPlaylist
 )
+import shutil
+import tempfile
+import os
+
+# Create a temporary directory for test media files
+TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 
 
 class TagModelTest(TestCase):
@@ -460,6 +466,7 @@ class BlogPostModelTest(TestCase):
         self.assertNotEqual(self.blog_post.slug, blog_post2.slug)
 
 
+@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class VideoPlaylistModelTest(TestCase):
     """Tests for VideoPlaylist model"""
 
@@ -870,3 +877,668 @@ class IntegrationTest(TestCase):
             reverse('course_lessons', args=[self.course.slug])
         )
         self.assertEqual(response.status_code, 200)
+
+
+class LessonContentModelTest(TestCase):
+    """Tests for LessonContent model"""
+
+    def setUp(self):
+        self.course = Course.objects.create(
+            title="Test Course",
+            slug="test-course",
+            short_description="Test",
+            description="Test"
+        )
+        self.lesson = Lesson.objects.create(
+            course=self.course,
+            title="Test Lesson",
+            slug="test-lesson",
+            order=1
+        )
+
+    def test_lesson_content_creation(self):
+        """Test that LessonContent is created correctly"""
+        content = LessonContent.objects.create(
+            lesson=self.lesson,
+            text_content="<p>Test content</p>"
+        )
+        self.assertEqual(content.lesson, self.lesson)
+        self.assertIsNotNone(content.text_content)
+        self.assertEqual(str(content), f"Treść lekcji: {self.lesson.title}")
+
+    def test_lesson_content_one_to_one_relationship(self):
+        """Test that LessonContent has one-to-one relationship with Lesson"""
+        LessonContent.objects.create(
+            lesson=self.lesson,
+            text_content="<p>Test</p>"
+        )
+
+        # Try to create another content for the same lesson
+        with self.assertRaises(Exception):
+            LessonContent.objects.create(
+                lesson=self.lesson,
+                text_content="<p>Another test</p>"
+            )
+
+    def test_lesson_content_blank_text_content(self):
+        """Test that text_content can be blank"""
+        content = LessonContent.objects.create(
+            lesson=self.lesson,
+            text_content=""
+        )
+        self.assertEqual(content.text_content, "")
+
+    def test_lesson_content_timestamps(self):
+        """Test that timestamps are automatically set"""
+        content = LessonContent.objects.create(
+            lesson=self.lesson,
+            text_content="Test"
+        )
+        self.assertIsNotNone(content.created_at)
+        self.assertIsNotNone(content.updated_at)
+
+
+class CourseDetailViewTest(TestCase):
+    """Tests for course_detail view"""
+
+    def setUp(self):
+        self.client = Client()
+        self.tag1 = Tag.objects.create(name="Python", slug="python")
+        self.tag2 = Tag.objects.create(name="Web", slug="web")
+
+        self.course = Course.objects.create(
+            title="Python Course",
+            slug="python-course",
+            short_description="Learn Python",
+            description="Complete Python course",
+            is_active=True
+        )
+        self.course.tags.add(self.tag1)
+
+    def test_course_detail_view(self):
+        """Test course detail view displays correctly"""
+        response = self.client.get(reverse('course_detail', args=[self.course.slug]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'main_app/course_detail.html')
+        self.assertEqual(response.context['course'], self.course)
+
+    def test_course_detail_inactive_course(self):
+        """Test that inactive courses return 404"""
+        self.course.is_active = False
+        self.course.save()
+        response = self.client.get(reverse('course_detail', args=[self.course.slug]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_course_detail_invalid_slug(self):
+        """Test that invalid slug returns 404"""
+        response = self.client.get(reverse('course_detail', args=['invalid-slug']))
+        self.assertEqual(response.status_code, 404)
+
+    def test_course_detail_suggested_courses(self):
+        """Test that suggested courses are based on shared tags"""
+        # Create courses with shared tags
+        course2 = Course.objects.create(
+            title="Advanced Python",
+            slug="advanced-python",
+            short_description="Advanced",
+            description="Advanced Python",
+            is_active=True
+        )
+        course2.tags.add(self.tag1)
+
+        course3 = Course.objects.create(
+            title="Web Development",
+            slug="web-dev",
+            short_description="Web",
+            description="Web course",
+            is_active=True
+        )
+        course3.tags.add(self.tag2)
+
+        response = self.client.get(reverse('course_detail', args=[self.course.slug]))
+        suggested = response.context['suggested_courses']
+
+        # Should include course2 (shares tag1), but not course3
+        self.assertIn(course2, suggested)
+        self.assertNotIn(course3, suggested)
+        self.assertNotIn(self.course, suggested)
+
+    def test_course_detail_no_duplicate_suggestions(self):
+        """Test that suggested courses don't include duplicates"""
+        course2 = Course.objects.create(
+            title="Another Course",
+            slug="another-course",
+            short_description="Test",
+            description="Test",
+            is_active=True
+        )
+        course2.tags.add(self.tag1, self.tag2)
+
+        self.course.tags.add(self.tag2)
+
+        response = self.client.get(reverse('course_detail', args=[self.course.slug]))
+        suggested = response.context['suggested_courses']
+
+        # Count occurrences
+        suggestion_ids = [c.id for c in suggested]
+        self.assertEqual(len(suggestion_ids), len(set(suggestion_ids)))
+
+    def test_course_get_absolute_url(self):
+        """Test Course.get_absolute_url() returns correct URL"""
+        expected_url = reverse('course_detail', args=[self.course.slug])
+        self.assertEqual(self.course.get_absolute_url(), expected_url)
+
+
+class CourseFilteringTest(TestCase):
+    """Tests for course filtering by tags"""
+
+    def setUp(self):
+        self.client = Client()
+        self.tag_python = Tag.objects.create(name="Python", slug="python")
+        self.tag_web = Tag.objects.create(name="Web", slug="web")
+
+        self.course1 = Course.objects.create(
+            title="Python Course",
+            slug="python-course",
+            short_description="Python",
+            description="Python course",
+            is_active=True
+        )
+        self.course1.tags.add(self.tag_python)
+
+        self.course2 = Course.objects.create(
+            title="Web Course",
+            slug="web-course",
+            short_description="Web",
+            description="Web course",
+            is_active=True
+        )
+        self.course2.tags.add(self.tag_web)
+
+        self.course3 = Course.objects.create(
+            title="Full Stack",
+            slug="full-stack",
+            short_description="Full Stack",
+            description="Full Stack course",
+            is_active=True
+        )
+        self.course3.tags.add(self.tag_python, self.tag_web)
+
+    def test_courses_view_shows_all_active_courses(self):
+        """Test that courses view shows all active courses"""
+        response = self.client.get(reverse('courses'))
+        courses = response.context['courses']
+        self.assertEqual(len(courses), 3)
+
+    def test_courses_view_hides_inactive_courses(self):
+        """Test that inactive courses are not shown"""
+        self.course1.is_active = False
+        self.course1.save()
+
+        response = self.client.get(reverse('courses'))
+        courses = response.context['courses']
+        self.assertEqual(len(courses), 2)
+        self.assertNotIn(self.course1, courses)
+
+    def test_courses_view_includes_all_tags(self):
+        """Test that all tags are included in context"""
+        response = self.client.get(reverse('courses'))
+        tags = response.context['tags']
+        self.assertIn(self.tag_python, tags)
+        self.assertIn(self.tag_web, tags)
+
+
+class EdgeCasesTest(TestCase):
+    """Tests for edge cases and error handling"""
+
+    def setUp(self):
+        self.client = Client()
+        self.course = Course.objects.create(
+            title="Test Course",
+            slug="test-course",
+            short_description="Test",
+            description="Test",
+            is_active=True
+        )
+        self.lesson_without_quiz = Lesson.objects.create(
+            course=self.course,
+            title="Lesson without Quiz",
+            slug="lesson-no-quiz",
+            order=1
+        )
+        self.lesson_without_task = Lesson.objects.create(
+            course=self.course,
+            title="Lesson without Task",
+            slug="lesson-no-task",
+            order=2
+        )
+
+    def test_quiz_detail_without_quiz_returns_404(self):
+        """Test that accessing quiz for lesson without quiz returns 404"""
+        response = self.client.get(
+            reverse('quiz_detail', args=[self.course.slug, self.lesson_without_quiz.slug])
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_practical_task_detail_without_task_returns_404(self):
+        """Test that accessing task for lesson without task returns 404"""
+        response = self.client.get(
+            reverse('practical_task_detail', args=[self.course.slug, self.lesson_without_task.slug])
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_quiz_submit_without_quiz_returns_404(self):
+        """Test that submitting quiz for lesson without quiz returns 404"""
+        response = self.client.post(
+            reverse('quiz_submit', args=[self.course.slug, self.lesson_without_quiz.slug]),
+            {}
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_lesson_with_empty_markdown(self):
+        """Test lesson with empty markdown content"""
+        lesson = Lesson.objects.create(
+            course=self.course,
+            title="Empty Lesson",
+            slug="empty-lesson",
+            order=3,
+            content_markdown=""
+        )
+        self.assertEqual(lesson.content_html, "")
+
+    def test_lesson_with_none_markdown(self):
+        """Test lesson with None markdown content"""
+        lesson = Lesson.objects.create(
+            course=self.course,
+            title="None Lesson",
+            slug="none-lesson",
+            order=4,
+            content_markdown=None
+        )
+        self.assertEqual(lesson.content_html, "")
+
+    def test_question_with_empty_text(self):
+        """Test question text_html with empty text"""
+        lesson = Lesson.objects.create(
+            course=self.course,
+            title="Quiz Lesson",
+            slug="quiz-lesson",
+            order=5
+        )
+        quiz = Quiz.objects.create(
+            lesson=lesson,
+            title="Test Quiz"
+        )
+        question = Question.objects.create(
+            quiz=quiz,
+            text="",
+            order=1
+        )
+        self.assertEqual(question.text_html, "")
+
+
+class UniqueConstraintsTest(TestCase):
+    """Tests for unique constraints and validation"""
+
+    def setUp(self):
+        self.course1 = Course.objects.create(
+            title="Course 1",
+            slug="course-1",
+            short_description="Test",
+            description="Test"
+        )
+        self.course2 = Course.objects.create(
+            title="Course 2",
+            slug="course-2",
+            short_description="Test",
+            description="Test"
+        )
+
+    def test_lesson_unique_together_same_course(self):
+        """Test that lessons with same slug in same course are not allowed"""
+        Lesson.objects.create(
+            course=self.course1,
+            title="Test Lesson",
+            slug="test-lesson",
+            order=1
+        )
+
+        # Try to create another lesson with same slug in same course
+        with self.assertRaises(Exception):
+            Lesson.objects.create(
+                course=self.course1,
+                title="Another Lesson",
+                slug="test-lesson",
+                order=2
+            )
+
+    def test_lesson_same_slug_different_courses(self):
+        """Test that lessons with same slug in different courses are allowed"""
+        lesson1 = Lesson.objects.create(
+            course=self.course1,
+            title="Test Lesson",
+            slug="test-lesson",
+            order=1
+        )
+
+        lesson2 = Lesson.objects.create(
+            course=self.course2,
+            title="Test Lesson",
+            slug="test-lesson",
+            order=1
+        )
+
+        self.assertNotEqual(lesson1.id, lesson2.id)
+        self.assertEqual(lesson1.slug, lesson2.slug)
+
+    def test_course_slug_must_be_unique(self):
+        """Test that course slugs must be unique"""
+        with self.assertRaises(Exception):
+            Course.objects.create(
+                title="Duplicate",
+                slug="course-1",
+                short_description="Test",
+                description="Test"
+            )
+
+
+class CacheMechanismTest(TestCase):
+    """Tests for cache mechanism in home view"""
+
+    def setUp(self):
+        self.client = Client()
+        # Clear cache before tests
+        from django.core.cache import cache
+        cache.clear()
+
+    def test_home_view_statistics_present(self):
+        """Test that statistics are present in home view context"""
+        Course.objects.create(
+            title="Test Course",
+            slug="test-course",
+            short_description="Test",
+            description="Test",
+            is_active=True
+        )
+
+        response = self.client.get(reverse('home'))
+        self.assertIn('total_courses', response.context)
+        self.assertIn('total_lessons', response.context)
+        self.assertIn('total_quizzes', response.context)
+
+    def test_home_view_statistics_accuracy(self):
+        """Test that statistics show correct counts"""
+        course = Course.objects.create(
+            title="Test Course",
+            slug="test-course",
+            short_description="Test",
+            description="Test",
+            is_active=True
+        )
+
+        lesson = Lesson.objects.create(
+            course=course,
+            title="Test Lesson",
+            slug="test-lesson",
+            order=1
+        )
+
+        Quiz.objects.create(
+            lesson=lesson,
+            title="Test Quiz"
+        )
+
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.context['total_courses'], 1)
+        self.assertEqual(response.context['total_lessons'], 1)
+        self.assertEqual(response.context['total_quizzes'], 1)
+
+    def test_home_view_cache_usage(self):
+        """Test that cache is used for statistics"""
+        from django.core.cache import cache
+
+        # First request - should cache
+        response1 = self.client.get(reverse('home'))
+
+        # Check cache is set
+        self.assertIsNotNone(cache.get('stats_total_courses'))
+        self.assertIsNotNone(cache.get('stats_total_lessons'))
+        self.assertIsNotNone(cache.get('stats_total_quizzes'))
+
+    def test_home_view_only_counts_active_courses(self):
+        """Test that statistics only count active courses"""
+        Course.objects.create(
+            title="Active Course",
+            slug="active-course",
+            short_description="Test",
+            description="Test",
+            is_active=True
+        )
+
+        Course.objects.create(
+            title="Inactive Course",
+            slug="inactive-course",
+            short_description="Test",
+            description="Test",
+            is_active=False
+        )
+
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.context['total_courses'], 1)
+
+
+@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
+class VideoPlaylistFilteringTest(TestCase):
+    """Tests for VideoPlaylist filtering and display"""
+
+    def setUp(self):
+        self.client = Client()
+        # Create test images
+        image_content = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
+            b'\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
+            b'\x02\x44\x01\x00\x3b'
+        )
+
+        self.active_playlist = VideoPlaylist.objects.create(
+            title="Active Playlist",
+            slug="active-playlist",
+            description="Active",
+            thumbnail=SimpleUploadedFile('active.gif', image_content, content_type='image/gif'),
+            youtube_playlist_url="https://www.youtube.com/playlist?list=TEST1",
+            order=1,
+            is_active=True
+        )
+
+        self.inactive_playlist = VideoPlaylist.objects.create(
+            title="Inactive Playlist",
+            slug="inactive-playlist",
+            description="Inactive",
+            thumbnail=SimpleUploadedFile('inactive.gif', image_content, content_type='image/gif'),
+            youtube_playlist_url="https://www.youtube.com/playlist?list=TEST2",
+            order=2,
+            is_active=False
+        )
+
+    def test_home_view_shows_only_active_playlists(self):
+        """Test that home view shows only active video playlists"""
+        response = self.client.get(reverse('home'))
+        playlists = response.context['video_playlists']
+
+        self.assertIn(self.active_playlist, playlists)
+        self.assertNotIn(self.inactive_playlist, playlists)
+
+    def test_home_view_playlist_ordering(self):
+        """Test that playlists are ordered by order field"""
+        image_content = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
+            b'\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
+            b'\x02\x44\x01\x00\x3b'
+        )
+
+        playlist_first = VideoPlaylist.objects.create(
+            title="First",
+            slug="first",
+            description="First",
+            thumbnail=SimpleUploadedFile('first.gif', image_content, content_type='image/gif'),
+            youtube_playlist_url="https://www.youtube.com/playlist?list=TEST3",
+            order=0,
+            is_active=True
+        )
+
+        response = self.client.get(reverse('home'))
+        playlists = list(response.context['video_playlists'])
+
+        self.assertEqual(playlists[0], playlist_first)
+        self.assertEqual(playlists[1], self.active_playlist)
+
+    def test_home_view_limits_playlists(self):
+        """Test that home view limits playlists to 6"""
+        image_content = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
+            b'\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
+            b'\x02\x44\x01\x00\x3b'
+        )
+
+        # Create 7 more playlists (total 8 active)
+        for i in range(7):
+            VideoPlaylist.objects.create(
+                title=f"Playlist {i}",
+                slug=f"playlist-{i}",
+                description=f"Playlist {i}",
+                thumbnail=SimpleUploadedFile(f'playlist{i}.gif', image_content, content_type='image/gif'),
+                youtube_playlist_url=f"https://www.youtube.com/playlist?list=TEST{i+10}",
+                order=i+10,
+                is_active=True
+            )
+
+        response = self.client.get(reverse('home'))
+        playlists = response.context['video_playlists']
+
+        self.assertEqual(len(playlists), 6)
+
+
+class AdditionalMarkdownTest(TestCase):
+    """Additional tests for Markdown edge cases"""
+
+    def setUp(self):
+        self.course = Course.objects.create(
+            title="Test Course",
+            slug="test-course",
+            short_description="Test",
+            description="Test"
+        )
+
+    def test_lesson_with_invalid_code_language(self):
+        """Test lesson with invalid/unknown code language"""
+        lesson = Lesson.objects.create(
+            course=self.course,
+            title="Invalid Code",
+            slug="invalid-code",
+            order=1,
+            content_markdown="```invalidlang\ncode here\n```"
+        )
+        html = lesson.content_html
+        # Should still render without crashing, defaulting to text
+        self.assertIsNotNone(html)
+        self.assertIn("code here", html)
+
+    def test_blog_post_with_tables(self):
+        """Test blog post with Markdown tables"""
+        blog_post = BlogPost.objects.create(
+            title="Table Test",
+            slug="table-test",
+            short_description="Test",
+            author_name="Test",
+            published_date=date.today(),
+            content_markdown="| Header 1 | Header 2 |\n|----------|----------|\n| Cell 1   | Cell 2   |",
+            is_published=True
+        )
+        html = blog_post.content_html
+        self.assertIn("<table>", html)
+        self.assertIn("Header 1", html)
+
+    def test_practical_task_with_special_characters(self):
+        """Test practical task with special characters in markdown"""
+        lesson = Lesson.objects.create(
+            course=self.course,
+            title="Test Lesson",
+            slug="test-lesson",
+            order=1
+        )
+
+        task = PracticalTask.objects.create(
+            lesson=lesson,
+            title="Special Chars",
+            content_markdown="Test with & < > \" ' characters"
+        )
+
+        self.assertIsNotNone(task.content_html)
+        # HTML should be escaped properly
+        self.assertIn("&", task.content_html)
+
+
+class QuizScoringEdgeCasesTest(TestCase):
+    """Additional tests for quiz scoring edge cases"""
+
+    def setUp(self):
+        self.client = Client()
+        self.course = Course.objects.create(
+            title="Test Course",
+            slug="test-course",
+            short_description="Test",
+            description="Test",
+            is_active=True
+        )
+        self.lesson = Lesson.objects.create(
+            course=self.course,
+            title="Test Lesson",
+            slug="test-lesson",
+            order=1
+        )
+        self.quiz = Quiz.objects.create(
+            lesson=self.lesson,
+            title="Test Quiz"
+        )
+
+    def test_quiz_with_no_questions(self):
+        """Test quiz submission with no questions"""
+        response = self.client.post(
+            reverse('quiz_submit', args=[self.course.slug, self.lesson.slug]),
+            {}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['score'], 0)
+
+    def test_quiz_with_invalid_answer_id(self):
+        """Test quiz submission with invalid answer ID"""
+        question = Question.objects.create(
+            quiz=self.quiz,
+            text="Test?",
+            order=1
+        )
+
+        Answer.objects.create(
+            question=question,
+            text="Correct",
+            is_correct=True,
+            order=1
+        )
+
+        # Submit with invalid answer ID
+        response = self.client.post(
+            reverse('quiz_submit', args=[self.course.slug, self.lesson.slug]),
+            {f'question_{question.id}': '99999'}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['correct_answers'], 0)
+
+
+def tearDownModule():
+    """Clean up temporary media files after all tests"""
+    try:
+        if os.path.exists(TEMP_MEDIA_ROOT):
+            shutil.rmtree(TEMP_MEDIA_ROOT)
+    except Exception as e:
+        print(f"Warning: Could not remove temporary media directory: {e}")

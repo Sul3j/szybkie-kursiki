@@ -45,7 +45,7 @@ class Course(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('lesson_detail', args=[self.course.slug, self.slug])
+        return reverse('course_detail', args=[self.slug])
     
 class Lesson(models.Model):
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='lessons', verbose_name="Kurs")

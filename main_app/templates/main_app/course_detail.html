@@ -1,0 +1,55 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'main_app/css/lessons.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="course-detail">
+    <div class="container">
+        <div class="course-header">
+            <div class="course-title-container scroll-reveal-scale">
+                <div class="course-icon-container">
+                    <i class="{{ course.icon }} course-icon-large"></i>
+                </div>
+                <div class="course-title-content">
+                    <h1>{{ course.title }}</h1>
+                    <p class="course-description">{{ course.short_description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-description-section">
+            <h2>O kursie</h2>
+            <p>{{ course.description }}</p>
+        </div>
+
+        <div class="course-actions">
+            <a href="{% url 'course_lessons' course.slug %}" class="btn btn-primary">
+                <i class="fas fa-play"></i> Rozpocznij kurs
+            </a>
+        </div>
+
+        {% if suggested_courses %}
+        <div class="suggested-courses">
+            <h2>Podobne kursy</h2>
+            <div class="courses-grid">
+                {% for suggested_course in suggested_courses %}
+                <div class="course-card">
+                    <div class="course-icon-container">
+                        <i class="{{ suggested_course.icon }} course-icon"></i>
+                    </div>
+                    <h3>{{ suggested_course.title }}</h3>
+                    <p>{{ suggested_course.short_description }}</p>
+                    <a href="{% url 'course_detail' suggested_course.slug %}" class="btn btn-secondary">
+                        Zobacz więcej
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

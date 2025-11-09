@@ -1,0 +1,52 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        script: |
+          cd /home/deploy/szybkie-kursiki
+          git pull origin main
+
+          # Create .env file from secrets
+          cat > .env << EOF
+          DJANGO_SECRET_KEY='${{ secrets.DJANGO_SECRET_KEY }}'
+          DJANGO_DEBUG='0'
+          DJANGO_ALLOWED_HOSTS='${{ secrets.DJANGO_ALLOWED_HOSTS }}'
+          DJANGO_SETTINGS_MODULE='app.settings'
+
+          MYSQL_DATABASE='${{ secrets.MYSQL_DATABASE }}'
+          MYSQL_USER='${{ secrets.MYSQL_USER }}'
+          MYSQL_PASSWORD='${{ secrets.MYSQL_PASSWORD }}'
+          MYSQL_ROOT_PASSWORD='${{ secrets.MYSQL_ROOT_PASSWORD }}'
+          MYSQL_HOST='db'
+          MYSQL_PORT='3306'
+          EOF
+
+          # Run deployment script
+          bash deploy.sh
+
+    - name: Deployment status
+      if: success()
+      run: echo "Deployment completed successfully!"
+
+    - name: Deployment failed
+      if: failure()
+      run: echo "Deployment failed!"
