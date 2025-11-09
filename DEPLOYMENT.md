@@ -466,7 +466,3 @@ W przypadku problemów:
 1. Sprawdź sekcję [Rozwiązywanie problemów](#rozwiązywanie-problemów)
 2. Sprawdź logi aplikacji i serwera
 3. Utwórz issue w repozytorium GitHub
-
----
-
-**Powodzenia z deploymentem!** 🚀
