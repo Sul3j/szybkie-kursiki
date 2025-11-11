@@ -1050,9 +1050,14 @@
         padding: 100px 0 60px;
     }
 
+    .lesson-detail .container {
+        padding: 0 15px;
+    }
+
     .lesson-content {
-        padding: 40px 30px;
+        padding: 40px 20px;
         border-radius: 20px;
+        margin: 0;
     }
 
     .markdown-content {
@@ -1158,10 +1163,14 @@
         padding: 90px 0 50px;
     }
 
+    .lesson-detail .container {
+        padding: 0 10px;
+    }
+
     .lesson-content {
-        padding: 30px 20px;
+        padding: 25px 15px;
         border-radius: 15px;
-        margin: 0 10px;
+        margin: 0;
     }
 
     .lesson-navigation {
