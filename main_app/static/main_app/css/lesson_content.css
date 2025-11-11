@@ -503,7 +503,6 @@
 .codehilite .s2,
 .codehilite .se,
 .codehilite .sh,
-.codehilite .si,
 .codehilite .sx,
 .codehilite .sr,
 .codehilite .s1,
@@ -591,6 +590,46 @@
 /* Punctuation and brackets (e.g., <, >, =, :) */
 .codehilite .p {
     color: #000000;
+}
+
+/* String interpolation - Light Mode */
+.codehilite .si {
+    color: #0000ff;
+}
+
+/* Entity names - Light Mode */
+.codehilite .ni {
+    color: #795e26;
+}
+
+/* Exceptions - Light Mode */
+.codehilite .ne {
+    color: #267f99;
+}
+
+/* Labels - Light Mode */
+.codehilite .nl {
+    color: #000000;
+}
+
+/* Other constants - Light Mode */
+.codehilite .no {
+    color: #0000ff;
+}
+
+/* Properties - Light Mode */
+.codehilite .py {
+    color: #001080;
+}
+
+/* Diff inserted - Light Mode */
+.codehilite .gi {
+    color: #098658;
+}
+
+/* Diff deleted - Light Mode */
+.codehilite .gd {
+    color: #a31515;
 }
 
 .markdown-content blockquote {
@@ -850,7 +889,7 @@
 }
 
 .dark-mode .codehilite {
-    background: #1e1e1e !important;
+    background: #1F1F1F !important;
     border: none;
     box-shadow: none;
 }
@@ -872,8 +911,8 @@
 }
 
 .dark-mode .codehilite pre {
-    background: #1e1e1e;
-    color: #d4d4d4;
+    background: #1F1F1F;
+    color: #CCCCCC;
 }
 
 .dark-mode .codehilite .k,
@@ -892,7 +931,6 @@
 .dark-mode .codehilite .s2,
 .dark-mode .codehilite .se,
 .dark-mode .codehilite .sh,
-.dark-mode .codehilite .si,
 .dark-mode .codehilite .sx,
 .dark-mode .codehilite .sr,
 .dark-mode .codehilite .s1,
@@ -953,7 +991,7 @@
 }
 
 .dark-mode .codehilite .err {
-    color: #f48771;
+    color: #f44747;
 }
 
 /* HTML/XML Tags - Dark Mode */
@@ -970,6 +1008,46 @@
 /* Punctuation - Dark Mode */
 .dark-mode .codehilite .p {
     color: #808080;
+}
+
+/* Entity names (HTML entities like &nbsp;) - Dark Mode */
+.dark-mode .codehilite .ni {
+    color: #DCDCAA;
+}
+
+/* Exceptions - Dark Mode */
+.dark-mode .codehilite .ne {
+    color: #4EC9B0;
+}
+
+/* Labels - Dark Mode */
+.dark-mode .codehilite .nl {
+    color: #C8C8C8;
+}
+
+/* Other constants - Dark Mode */
+.dark-mode .codehilite .no {
+    color: #4FC1FF;
+}
+
+/* Properties - Dark Mode */
+.dark-mode .codehilite .py {
+    color: #9CDCFE;
+}
+
+/* String interpolation - Dark Mode */
+.dark-mode .codehilite .si {
+    color: #D7BA7D;
+}
+
+/* Diff inserted - Dark Mode */
+.dark-mode .codehilite .gi {
+    color: #b5cea8;
+}
+
+/* Diff deleted - Dark Mode */
+.dark-mode .codehilite .gd {
+    color: #ce9178;
 }
 
 .dark-mode .markdown-content blockquote {
