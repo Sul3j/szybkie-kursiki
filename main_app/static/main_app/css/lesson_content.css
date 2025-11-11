@@ -390,6 +390,116 @@
     color: #6b7280;
 }
 
+/* Monaco Editor Code Blocks */
+.monaco-code-block {
+    position: relative;
+    border-radius: 12px;
+    margin: 2em 0;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+}
+
+.monaco-editor-container {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Single line code blocks - centered appearance */
+.monaco-editor-container.single-line {
+    display: flex;
+    align-items: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.monaco-editor-container.two-lines {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+/* Monaco Copy Button */
+.monaco-copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    width: 36px;
+    height: 36px;
+    z-index: 10;
+    opacity: 0.6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.monaco-code-block:hover .monaco-copy-btn {
+    opacity: 1;
+}
+
+.monaco-copy-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: #94a3b8;
+    color: #475569;
+    transform: scale(1.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.monaco-copy-btn:active {
+    transform: scale(0.95);
+}
+
+.monaco-copy-btn.copied {
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
+}
+
+/* Dark Mode */
+.dark-mode .monaco-code-block {
+    background: #1F1F1F !important;
+    border: 1px solid #3f3f3f;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .monaco-editor-container {
+    background: #1F1F1F !important;
+}
+
+.dark-mode .monaco-editor .monaco-editor-background {
+    background-color: #1F1F1F !important;
+}
+
+.dark-mode .monaco-copy-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #d4d4d4;
+}
+
+.dark-mode .monaco-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+.dark-mode .monaco-copy-btn.copied {
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
+}
+
+/* Legacy .codehilite for backwards compatibility */
 .codehilite {
     position: relative;
     border-radius: 12px;
@@ -506,7 +616,8 @@
 .codehilite .sx,
 .codehilite .sr,
 .codehilite .s1,
-.codehilite .ss {
+.codehilite .ss,
+.codehilite .sd {
     color: #a31515;
 }
 
@@ -630,6 +741,45 @@
 /* Diff deleted - Light Mode */
 .codehilite .gd {
     color: #a31515;
+}
+
+/* JavaScript/TypeScript specific tokens - Light Mode */
+.codehilite .nx {
+    color: #001080;
+}
+
+/* String affixes (f-strings, r-strings, etc) - Light Mode */
+.codehilite .sa {
+    color: #a31515;
+}
+
+/* Whitespace - Light Mode */
+.codehilite .w {
+    color: transparent;
+}
+
+/* YAML scalars - Light Mode */
+.codehilite .l,
+.codehilite .l-Scalar,
+.codehilite .l-Scalar-Plain {
+    color: #a31515;
+}
+
+/* YAML indicators - Light Mode */
+.codehilite .p-Indicator {
+    color: #0000ff;
+}
+
+/* Generic heading (markdown) - Light Mode */
+.codehilite .gh {
+    color: #0000ff;
+    font-weight: bold;
+}
+
+/* Generic subheading - Light Mode */
+.codehilite .gu {
+    color: #267f99;
+    font-weight: bold;
 }
 
 .markdown-content blockquote {
@@ -934,7 +1084,8 @@
 .dark-mode .codehilite .sx,
 .dark-mode .codehilite .sr,
 .dark-mode .codehilite .s1,
-.dark-mode .codehilite .ss {
+.dark-mode .codehilite .ss,
+.dark-mode .codehilite .sd {
     color: #ce9178;
 }
 
@@ -1048,6 +1199,45 @@
 /* Diff deleted - Dark Mode */
 .dark-mode .codehilite .gd {
     color: #ce9178;
+}
+
+/* JavaScript/TypeScript specific tokens - Dark Mode */
+.dark-mode .codehilite .nx {
+    color: #9CDCFE;
+}
+
+/* String affixes (f-strings, r-strings, etc) - Dark Mode */
+.dark-mode .codehilite .sa {
+    color: #ce9178;
+}
+
+/* Whitespace - Dark Mode */
+.dark-mode .codehilite .w {
+    color: transparent;
+}
+
+/* YAML scalars - Dark Mode */
+.dark-mode .codehilite .l,
+.dark-mode .codehilite .l-Scalar,
+.dark-mode .codehilite .l-Scalar-Plain {
+    color: #ce9178;
+}
+
+/* YAML indicators - Dark Mode */
+.dark-mode .codehilite .p-Indicator {
+    color: #569cd6;
+}
+
+/* Generic heading (markdown) - Dark Mode */
+.dark-mode .codehilite .gh {
+    color: #569cd6;
+    font-weight: bold;
+}
+
+/* Generic subheading - Dark Mode */
+.dark-mode .codehilite .gu {
+    color: #4EC9B0;
+    font-weight: bold;
 }
 
 .dark-mode .markdown-content blockquote {

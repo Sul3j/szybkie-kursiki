@@ -390,6 +390,116 @@
     color: #6b7280;
 }
 
+/* Monaco Editor Code Blocks */
+.monaco-code-block {
+    position: relative;
+    border-radius: 12px;
+    margin: 2em 0;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+}
+
+.monaco-editor-container {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Single line code blocks - centered appearance */
+.monaco-editor-container.single-line {
+    display: flex;
+    align-items: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.monaco-editor-container.two-lines {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+/* Monaco Copy Button */
+.monaco-copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    width: 36px;
+    height: 36px;
+    z-index: 10;
+    opacity: 0.6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.monaco-code-block:hover .monaco-copy-btn {
+    opacity: 1;
+}
+
+.monaco-copy-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: #94a3b8;
+    color: #475569;
+    transform: scale(1.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.monaco-copy-btn:active {
+    transform: scale(0.95);
+}
+
+.monaco-copy-btn.copied {
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
+}
+
+/* Dark Mode */
+.dark-mode .monaco-code-block {
+    background: #1F1F1F !important;
+    border: 1px solid #3f3f3f;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .monaco-editor-container {
+    background: #1F1F1F !important;
+}
+
+.dark-mode .monaco-editor .monaco-editor-background {
+    background-color: #1F1F1F !important;
+}
+
+.dark-mode .monaco-copy-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #d4d4d4;
+}
+
+.dark-mode .monaco-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+.dark-mode .monaco-copy-btn.copied {
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
+}
+
+/* Legacy .codehilite for backwards compatibility */
 .codehilite {
     position: relative;
     border-radius: 12px;
@@ -503,11 +613,11 @@
 .codehilite .s2,
 .codehilite .se,
 .codehilite .sh,
-.codehilite .si,
 .codehilite .sx,
 .codehilite .sr,
 .codehilite .s1,
-.codehilite .ss {
+.codehilite .ss,
+.codehilite .sd {
     color: #a31515;
 }
 
@@ -543,7 +653,6 @@
 }
 
 .codehilite .n,
-.codehilite .na,
 .codehilite .nv,
 .codehilite .vc,
 .codehilite .vg,
@@ -575,6 +684,101 @@
 }
 
 .codehilite .gs {
+    font-weight: bold;
+}
+
+/* HTML/XML Tags (e.g., <div>, <span>, <?php>) */
+.codehilite .nt {
+    color: #800000;
+    font-weight: 600;
+}
+
+/* HTML/XML Attributes (e.g., class="", id="") */
+.codehilite .na {
+    color: #ff0000;
+}
+
+/* Punctuation and brackets (e.g., <, >, =, :) */
+.codehilite .p {
+    color: #000000;
+}
+
+/* String interpolation - Light Mode */
+.codehilite .si {
+    color: #0000ff;
+}
+
+/* Entity names - Light Mode */
+.codehilite .ni {
+    color: #795e26;
+}
+
+/* Exceptions - Light Mode */
+.codehilite .ne {
+    color: #267f99;
+}
+
+/* Labels - Light Mode */
+.codehilite .nl {
+    color: #000000;
+}
+
+/* Other constants - Light Mode */
+.codehilite .no {
+    color: #0000ff;
+}
+
+/* Properties - Light Mode */
+.codehilite .py {
+    color: #001080;
+}
+
+/* Diff inserted - Light Mode */
+.codehilite .gi {
+    color: #098658;
+}
+
+/* Diff deleted - Light Mode */
+.codehilite .gd {
+    color: #a31515;
+}
+
+/* JavaScript/TypeScript specific tokens - Light Mode */
+.codehilite .nx {
+    color: #001080;
+}
+
+/* String affixes (f-strings, r-strings, etc) - Light Mode */
+.codehilite .sa {
+    color: #a31515;
+}
+
+/* Whitespace - Light Mode */
+.codehilite .w {
+    color: transparent;
+}
+
+/* YAML scalars - Light Mode */
+.codehilite .l,
+.codehilite .l-Scalar,
+.codehilite .l-Scalar-Plain {
+    color: #a31515;
+}
+
+/* YAML indicators - Light Mode */
+.codehilite .p-Indicator {
+    color: #0000ff;
+}
+
+/* Generic heading (markdown) - Light Mode */
+.codehilite .gh {
+    color: #0000ff;
+    font-weight: bold;
+}
+
+/* Generic subheading - Light Mode */
+.codehilite .gu {
+    color: #267f99;
     font-weight: bold;
 }
 
@@ -835,7 +1039,7 @@
 }
 
 .dark-mode .codehilite {
-    background: #1e1e1e !important;
+    background: #1F1F1F !important;
     border: none;
     box-shadow: none;
 }
@@ -857,8 +1061,8 @@
 }
 
 .dark-mode .codehilite pre {
-    background: #1e1e1e;
-    color: #d4d4d4;
+    background: #1F1F1F;
+    color: #CCCCCC;
 }
 
 .dark-mode .codehilite .k,
@@ -877,11 +1081,11 @@
 .dark-mode .codehilite .s2,
 .dark-mode .codehilite .se,
 .dark-mode .codehilite .sh,
-.dark-mode .codehilite .si,
 .dark-mode .codehilite .sx,
 .dark-mode .codehilite .sr,
 .dark-mode .codehilite .s1,
-.dark-mode .codehilite .ss {
+.dark-mode .codehilite .ss,
+.dark-mode .codehilite .sd {
     color: #ce9178;
 }
 
@@ -916,7 +1120,6 @@
 }
 
 .dark-mode .codehilite .n,
-.dark-mode .codehilite .na,
 .dark-mode .codehilite .nv,
 .dark-mode .codehilite .vc,
 .dark-mode .codehilite .vg,
@@ -939,7 +1142,102 @@
 }
 
 .dark-mode .codehilite .err {
-    color: #f48771;
+    color: #f44747;
+}
+
+/* HTML/XML Tags - Dark Mode */
+.dark-mode .codehilite .nt {
+    color: #569cd6;
+    font-weight: normal;
+}
+
+/* HTML/XML Attributes - Dark Mode */
+.dark-mode .codehilite .na {
+    color: #9cdcfe;
+}
+
+/* Punctuation - Dark Mode */
+.dark-mode .codehilite .p {
+    color: #808080;
+}
+
+/* Entity names (HTML entities like &nbsp;) - Dark Mode */
+.dark-mode .codehilite .ni {
+    color: #DCDCAA;
+}
+
+/* Exceptions - Dark Mode */
+.dark-mode .codehilite .ne {
+    color: #4EC9B0;
+}
+
+/* Labels - Dark Mode */
+.dark-mode .codehilite .nl {
+    color: #C8C8C8;
+}
+
+/* Other constants - Dark Mode */
+.dark-mode .codehilite .no {
+    color: #4FC1FF;
+}
+
+/* Properties - Dark Mode */
+.dark-mode .codehilite .py {
+    color: #9CDCFE;
+}
+
+/* String interpolation - Dark Mode */
+.dark-mode .codehilite .si {
+    color: #D7BA7D;
+}
+
+/* Diff inserted - Dark Mode */
+.dark-mode .codehilite .gi {
+    color: #b5cea8;
+}
+
+/* Diff deleted - Dark Mode */
+.dark-mode .codehilite .gd {
+    color: #ce9178;
+}
+
+/* JavaScript/TypeScript specific tokens - Dark Mode */
+.dark-mode .codehilite .nx {
+    color: #9CDCFE;
+}
+
+/* String affixes (f-strings, r-strings, etc) - Dark Mode */
+.dark-mode .codehilite .sa {
+    color: #ce9178;
+}
+
+/* Whitespace - Dark Mode */
+.dark-mode .codehilite .w {
+    color: transparent;
+}
+
+/* YAML scalars - Dark Mode */
+.dark-mode .codehilite .l,
+.dark-mode .codehilite .l-Scalar,
+.dark-mode .codehilite .l-Scalar-Plain {
+    color: #ce9178;
+}
+
+/* YAML indicators - Dark Mode */
+.dark-mode .codehilite .p-Indicator {
+    color: #569cd6;
+}
+
+/* Generic heading (markdown) - Dark Mode */
+.dark-mode .codehilite .gh {
+    color: #569cd6;
+    font-weight: bold;
+}
+
+/* Generic subheading - Dark Mode */
+.dark-mode .codehilite .gu {
+    color: #4EC9B0;
+    font-weight: bold;
 }
 
 .dark-mode .markdown-content blockquote {
@@ -1020,9 +1318,14 @@
         padding: 100px 0 60px;
     }
 
+    .lesson-detail .container {
+        padding: 0 15px;
+    }
+
     .lesson-content {
-        padding: 40px 30px;
+        padding: 40px 20px;
         border-radius: 20px;
+        margin: 0;
     }
 
     .markdown-content {
@@ -1128,10 +1431,14 @@
         padding: 90px 0 50px;
     }
 
+    .lesson-detail .container {
+        padding: 0 10px;
+    }
+
     .lesson-content {
-        padding: 30px 20px;
+        padding: 25px 15px;
         border-radius: 15px;
-        margin: 0 10px;
+        margin: 0;
     }
 
     .lesson-navigation {

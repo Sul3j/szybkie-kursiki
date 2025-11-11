@@ -3,9 +3,6 @@ from django.urls import reverse
 from ckeditor.fields import RichTextField
 import markdown
 import re
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import HtmlFormatter 
 from django.utils.text import slugify
 
 class Tag(models.Model):
@@ -98,7 +95,7 @@ class Lesson(models.Model):
         
         extensions = [
             'markdown.extensions.extra',
-            'markdown.extensions.codehilite',
+            'markdown.extensions.fenced_code',  # Zamienione codehilite na fenced_code
             'markdown.extensions.toc'
         ]
 
@@ -112,14 +109,42 @@ class Lesson(models.Model):
     def _highlight_code(self, match):
         language = match.group(1)
         code = match.group(2)
-        
-        try:
-            lexer = get_lexer_by_name(language, stripall=True)
-        except:
-            lexer = get_lexer_by_name('text', stripall=True)
-            
-        formatter = HtmlFormatter(style='default', cssclass='codehilite')
-        return highlight(code, lexer, formatter)
+
+        # Unescape HTML entities in code
+        import html
+        code = html.unescape(code)
+
+        # Map language aliases to Monaco language IDs
+        language_map = {
+            'py': 'python',
+            'js': 'javascript',
+            'ts': 'typescript',
+            'html': 'html',
+            'css': 'css',
+            'bash': 'shell',
+            'sh': 'shell',
+            'shell': 'shell',
+            'sql': 'sql',
+            'yaml': 'yaml',
+            'yml': 'yaml',
+            'json': 'json',
+            'xml': 'xml',
+            'dockerfile': 'dockerfile',
+            'docker': 'dockerfile',
+            'csharp': 'csharp',
+            'cs': 'csharp',
+            'cpp': 'cpp',
+            'c++': 'cpp',
+            'php': 'php',
+        }
+
+        monaco_language = language_map.get(language.lower(), language.lower())
+
+        # Escape code for HTML attribute
+        escaped_code = html.escape(code)
+
+        # Return Monaco editor container
+        return f'<div class="monaco-code-block" data-language="{monaco_language}" data-code="{escaped_code}"></div>'
 
 class LessonContent(models.Model):
     lesson = models.OneToOneField('Lesson', on_delete=models.CASCADE, related_name='content', verbose_name="Lekcja")
@@ -174,8 +199,7 @@ class Question(models.Model):
 
         extensions = [
             'markdown.extensions.extra',
-            'markdown.extensions.codehilite',
-            'markdown.extensions.fenced_code',
+            'markdown.extensions.fenced_code',  # Removed codehilite for Monaco
         ]
 
         html = markdown.markdown(self.text, extensions=extensions)
@@ -190,13 +214,24 @@ class Question(models.Model):
         language = match.group(1)
         code = match.group(2)
 
-        try:
-            lexer = get_lexer_by_name(language, stripall=True)
-        except:
-            lexer = get_lexer_by_name('text', stripall=True)
+        # Unescape HTML entities in code
+        import html
+        code = html.unescape(code)
 
-        formatter = HtmlFormatter(style='monokai', cssclass='codehilite')
-        return highlight(code, lexer, formatter)
+        # Map language aliases to Monaco language IDs
+        language_map = {
+            'py': 'python', 'js': 'javascript', 'ts': 'typescript',
+            'html': 'html', 'css': 'css', 'bash': 'shell', 'sh': 'shell',
+            'shell': 'shell', 'sql': 'sql', 'yaml': 'yaml', 'yml': 'yaml',
+            'json': 'json', 'xml': 'xml', 'dockerfile': 'dockerfile',
+            'docker': 'dockerfile', 'csharp': 'csharp', 'cs': 'csharp',
+            'cpp': 'cpp', 'c++': 'cpp', 'php': 'php',
+        }
+
+        monaco_language = language_map.get(language.lower(), language.lower())
+        escaped_code = html.escape(code)
+
+        return f'<div class="monaco-code-block" data-language="{monaco_language}" data-code="{escaped_code}"></div>'
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers', verbose_name="Pytanie")
@@ -252,12 +287,11 @@ class PracticalTask(models.Model):
         
         extensions = [
             'markdown.extensions.extra',
-            'markdown.extensions.codehilite',
-            'markdown.extensions.fenced_code',
+            'markdown.extensions.fenced_code',  # Removed codehilite for Monaco
             'markdown.extensions.tables',
             'markdown.extensions.toc'
         ]
-        
+
         self.content_html = markdown.markdown(self.content_markdown, extensions=extensions)
         self.instructions_html = markdown.markdown(self.instructions_markdown, extensions=extensions)
         self.example_html = markdown.markdown(self.example_markdown, extensions=extensions)
@@ -307,8 +341,7 @@ class BlogPost(models.Model):
 
         extensions = [
             'markdown.extensions.extra',
-            'markdown.extensions.codehilite',
-            'markdown.extensions.fenced_code',
+            'markdown.extensions.fenced_code',  # Removed codehilite for Monaco
             'markdown.extensions.tables',
             'markdown.extensions.toc'
         ]
@@ -325,13 +358,24 @@ class BlogPost(models.Model):
         language = match.group(1)
         code = match.group(2)
 
-        try:
-            lexer = get_lexer_by_name(language, stripall=True)
-        except:
-            lexer = get_lexer_by_name('text', stripall=True)
+        # Unescape HTML entities in code
+        import html
+        code = html.unescape(code)
 
-        formatter = HtmlFormatter(style='default', cssclass='codehilite')
-        return highlight(code, lexer, formatter)
+        # Map language aliases to Monaco language IDs
+        language_map = {
+            'py': 'python', 'js': 'javascript', 'ts': 'typescript',
+            'html': 'html', 'css': 'css', 'bash': 'shell', 'sh': 'shell',
+            'shell': 'shell', 'sql': 'sql', 'yaml': 'yaml', 'yml': 'yaml',
+            'json': 'json', 'xml': 'xml', 'dockerfile': 'dockerfile',
+            'docker': 'dockerfile', 'csharp': 'csharp', 'cs': 'csharp',
+            'cpp': 'cpp', 'c++': 'cpp', 'php': 'php',
+        }
+
+        monaco_language = language_map.get(language.lower(), language.lower())
+        escaped_code = html.escape(code)
+
+        return f'<div class="monaco-code-block" data-language="{monaco_language}" data-code="{escaped_code}"></div>'
 
 class VideoPlaylist(models.Model):
     title = models.CharField(max_length=200, verbose_name="Tytuł kursu wideo")

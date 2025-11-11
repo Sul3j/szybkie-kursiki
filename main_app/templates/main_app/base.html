@@ -12,6 +12,15 @@
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
     <link rel="stylesheet" href="{% static 'main_app/css/custom.css' %}">
+
+    <!-- Monaco Editor CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.css">
+
+    <style>
+        /* Force Monaco to load */
+        .monaco-code-block { min-height: 50px; }
+    </style>
+
     {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -138,6 +147,11 @@
     {% endif %}
 
     <script src="{% static 'main_app/js/script.js' %}" defer></script>
+
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <script src="{% static 'main_app/js/monaco-init.js' %}?v=5" defer></script>
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>
