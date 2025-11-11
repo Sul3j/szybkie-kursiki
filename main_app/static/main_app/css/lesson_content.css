@@ -399,7 +399,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     background: #ffffff;
     border: 1px solid #e5e7eb;
-    padding-top: 10px;
+    padding-top: 15px;
 }
 
 .monaco-editor-container {
@@ -509,7 +509,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     background: #f8fafc;
     border: 1px solid #e5e7eb;
-    padding-top: 10px;
+    padding-top: 15px;
 }
 
 .codehilite .header {

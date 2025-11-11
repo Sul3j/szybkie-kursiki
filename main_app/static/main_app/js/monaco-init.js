@@ -46,7 +46,7 @@
                 const container = document.getElementById(editorId);
 
                 // Adjust height based on line count
-                const lineHeight = 19;
+                const lineHeight = 22;  // Increased to match Monaco's actual line height
                 let calculatedHeight;
                 if (lineCount === 1) {
                     calculatedHeight = 55;  // Compact for single line with padding
@@ -54,8 +54,9 @@
                     calculatedHeight = 75;  // Medium for 2 lines with padding
                 } else {
                     const minHeight = 100;
-                    const maxHeight = 800;
-                    calculatedHeight = Math.min(maxHeight, Math.max(minHeight, lineCount * lineHeight + 20));
+                    const padding = 60;  // Extra padding for editor chrome
+                    // No max height - auto-adjust to content with extra padding
+                    calculatedHeight = Math.max(minHeight, lineCount * lineHeight + padding);
                 }
 
                 container.style.height = `${calculatedHeight}px`;
@@ -75,10 +76,9 @@
                     lineNumbersMinChars: 3,
                     renderLineHighlight: 'none',
                     scrollbar: {
-                        vertical: 'auto',
+                        vertical: 'hidden',
                         horizontal: 'auto',
                         useShadows: false,
-                        verticalScrollbarSize: 10,
                         horizontalScrollbarSize: 10
                     },
                     overviewRulerLanes: 0,
@@ -91,6 +91,13 @@
                     contextmenu: false,
                     wordWrap: 'off'
                 });
+
+                // Adjust height to actual content after layout
+                setTimeout(() => {
+                    const contentHeight = editor.getContentHeight();
+                    container.style.height = `${contentHeight}px`;
+                    editor.layout();
+                }, 100);
 
                 // Store editor reference for theme updates
                 block.monacoEditor = editor;

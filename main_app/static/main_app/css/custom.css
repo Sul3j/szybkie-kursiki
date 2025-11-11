@@ -895,12 +895,7 @@ body.menu-open {
 }
 
 .vscode-minimap {
-    width: 100px;
-    background: #ffffff;
-    border-left: 1px solid #e5e5e5;
-    opacity: 0.6;
-    position: relative;
-    overflow: hidden;
+    display: none;
 }
 
 .vscode-minimap-content {
@@ -1104,8 +1099,7 @@ body.menu-open {
 }
 
 .dark-mode .vscode-minimap {
-    background: #1e1e1e;
-    border-left: 1px solid #2d2d30;
+    display: none;
 }
 
 .dark-mode .vscode-minimap-content {
@@ -3409,8 +3403,8 @@ body.menu-open {
     }
     
     .nav {
-        position: fixed;
-        top: 64px;
+        position: absolute;
+        top: 100%;
         left: 0;
         right: 0;
         background: rgba(255, 255, 255, 0.98);
@@ -3489,7 +3483,7 @@ body.menu-open {
     }
 
     .nav-icon-mobile {
-        display: inline-block;
+        display: none;
     }
 
     .nav-link {
@@ -3525,7 +3519,10 @@ body.menu-open {
     }
 
     .theme-toggle {
+        width: 42px;
+        height: 42px;
         margin-left: 0;
+        flex-shrink: 0;
     }
     
     .hero-content {
