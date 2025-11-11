@@ -958,8 +958,8 @@
 
 /* HTML/XML Tags - Dark Mode */
 .dark-mode .codehilite .nt {
-    color: #4ec9b0;
-    font-weight: 600;
+    color: #569cd6;
+    font-weight: normal;
 }
 
 /* HTML/XML Attributes - Dark Mode */
@@ -969,7 +969,7 @@
 
 /* Punctuation - Dark Mode */
 .dark-mode .codehilite .p {
-    color: #d4d4d4;
+    color: #808080;
 }
 
 .dark-mode .markdown-content blockquote {
