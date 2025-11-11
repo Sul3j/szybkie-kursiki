@@ -543,7 +543,6 @@
 }
 
 .codehilite .n,
-.codehilite .na,
 .codehilite .nv,
 .codehilite .vc,
 .codehilite .vg,
@@ -576,6 +575,22 @@
 
 .codehilite .gs {
     font-weight: bold;
+}
+
+/* HTML/XML Tags (e.g., <div>, <span>, <?php>) */
+.codehilite .nt {
+    color: #800000;
+    font-weight: 600;
+}
+
+/* HTML/XML Attributes (e.g., class="", id="") */
+.codehilite .na {
+    color: #ff0000;
+}
+
+/* Punctuation and brackets (e.g., <, >, =, :) */
+.codehilite .p {
+    color: #000000;
 }
 
 .markdown-content blockquote {
@@ -916,7 +931,6 @@
 }
 
 .dark-mode .codehilite .n,
-.dark-mode .codehilite .na,
 .dark-mode .codehilite .nv,
 .dark-mode .codehilite .vc,
 .dark-mode .codehilite .vg,
@@ -940,6 +954,22 @@
 
 .dark-mode .codehilite .err {
     color: #f48771;
+}
+
+/* HTML/XML Tags - Dark Mode */
+.dark-mode .codehilite .nt {
+    color: #4ec9b0;
+    font-weight: 600;
+}
+
+/* HTML/XML Attributes - Dark Mode */
+.dark-mode .codehilite .na {
+    color: #9cdcfe;
+}
+
+/* Punctuation - Dark Mode */
+.dark-mode .codehilite .p {
+    color: #d4d4d4;
 }
 
 .dark-mode .markdown-content blockquote {
