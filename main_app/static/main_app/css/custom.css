@@ -4197,7 +4197,7 @@ body.menu-open {
     flex-direction: column;
     width: 100%;
     height: 100%;
-    border: 2px solid rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(67, 97, 238, 0.12);
     text-decoration: none;
     color: inherit;
     cursor: pointer;
@@ -4300,18 +4300,25 @@ body.menu-open {
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-    color: white;
+    background: rgba(67, 97, 238, 0.08);
+    color: var(--gradient-start);
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.25);
+    border: 1px solid rgba(67, 97, 238, 0.15);
+    transition: all 0.3s ease;
 }
 
 .post-badge i {
     font-size: 0.9rem;
+}
+
+.post-card:hover .post-badge {
+    background: rgba(67, 97, 238, 0.12);
+    border-color: rgba(67, 97, 238, 0.25);
+    transform: translateY(-2px);
 }
 
 .post-bookmark {
@@ -4411,20 +4418,22 @@ body.menu-open {
     align-items: center;
     gap: 8px;
     padding: 12px 20px;
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.08), rgba(58, 12, 163, 0.08));
+    background: rgba(67, 97, 238, 0.08);
     border-radius: 12px;
     font-weight: 600;
     font-size: 0.9rem;
     color: var(--gradient-start);
     transition: all 0.3s ease;
     white-space: nowrap;
+    border: 1px solid rgba(67, 97, 238, 0.15);
 }
 
 .post-card:hover .post-read-more {
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     color: white;
+    border-color: transparent;
     transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    box-shadow: 0 4px 16px rgba(67, 97, 238, 0.25);
 }
 
 .post-read-more i {
@@ -4568,8 +4577,14 @@ body.menu-open {
 }
 
 .dark-mode .post-badge {
-    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.35);
+    background: rgba(67, 97, 238, 0.15);
+    border-color: rgba(67, 97, 238, 0.25);
+    color: rgba(99, 163, 253, 1);
+}
+
+.dark-mode .post-card:hover .post-badge {
+    background: rgba(67, 97, 238, 0.25);
+    border-color: rgba(67, 97, 238, 0.4);
 }
 
 .dark-mode .post-bookmark {
@@ -4605,7 +4620,8 @@ body.menu-open {
 }
 
 .dark-mode .post-read-more {
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.25), rgba(58, 12, 163, 0.25));
+    background: rgba(67, 97, 238, 0.15);
+    border-color: rgba(67, 97, 238, 0.25);
     color: rgba(99, 163, 253, 1);
     font-weight: 700;
 }
@@ -4613,7 +4629,8 @@ body.menu-open {
 .dark-mode .post-card:hover .post-read-more {
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     color: white;
-    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(67, 97, 238, 0.35);
 }
 
 .dark-mode .post-meta {
@@ -5097,7 +5114,7 @@ body.menu-open {
     flex-direction: column;
     width: 100%;
     height: 100%;
-    border: 2px solid rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(67, 97, 238, 0.12);
     text-decoration: none;
     color: inherit;
     cursor: pointer;
@@ -5297,6 +5314,7 @@ body.menu-open {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: gradientShift 8s ease infinite;
 }
 
 .video-description {
@@ -5325,15 +5343,23 @@ body.menu-open {
     align-items: center;
     gap: 8px;
     padding: 8px 14px;
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.08), rgba(58, 12, 163, 0.08));
+    background: rgba(67, 97, 238, 0.08);
     border-radius: 10px;
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--gradient-start);
+    border: 1px solid rgba(67, 97, 238, 0.15);
+    transition: all 0.3s ease;
 }
 
 .video-platform i {
     font-size: 1.1rem;
+}
+
+.video-card:hover .video-platform {
+    background: rgba(67, 97, 238, 0.12);
+    border-color: rgba(67, 97, 238, 0.25);
+    transform: translateY(-2px);
 }
 
 .video-cta {
@@ -5341,20 +5367,22 @@ body.menu-open {
     align-items: center;
     gap: 8px;
     padding: 12px 20px;
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.08), rgba(58, 12, 163, 0.08));
+    background: rgba(67, 97, 238, 0.08);
     border-radius: 12px;
     font-weight: 600;
     font-size: 0.9rem;
     color: var(--gradient-start);
     transition: all 0.3s ease;
     white-space: nowrap;
+    border: 1px solid rgba(67, 97, 238, 0.15);
 }
 
 .video-card:hover .video-cta {
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     color: white;
+    border-color: transparent;
     transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    box-shadow: 0 4px 16px rgba(67, 97, 238, 0.25);
 }
 
 .video-cta i {
@@ -5469,19 +5497,27 @@ body.menu-open {
 }
 
 .dark-mode .video-platform {
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.25), rgba(58, 12, 163, 0.25));
+    background: rgba(67, 97, 238, 0.15);
+    border-color: rgba(67, 97, 238, 0.25);
     color: rgba(99, 163, 253, 1);
 }
 
+.dark-mode .video-card:hover .video-platform {
+    background: rgba(67, 97, 238, 0.25);
+    border-color: rgba(67, 97, 238, 0.4);
+}
+
 .dark-mode .video-cta {
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.25), rgba(58, 12, 163, 0.25));
+    background: rgba(67, 97, 238, 0.15);
+    border-color: rgba(67, 97, 238, 0.25);
     color: rgba(99, 163, 253, 1);
 }
 
 .dark-mode .video-card:hover .video-cta {
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     color: white;
-    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(67, 97, 238, 0.35);
 }
 
 .dark-mode .video-description {

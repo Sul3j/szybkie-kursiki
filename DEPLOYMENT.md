@@ -219,7 +219,8 @@ Sprawdź czy plik `.github/workflows/deploy.yml` istnieje w repozytorium.
 cd /home/deploy/szybkie-kursiki
 
 # Uruchom kontenery (bez SSL na razie)
-docker compose -f docker-compose.production.yml up -d
+
+
 
 # Sprawdź status kontenerów
 docker compose -f docker-compose.production.yml ps
