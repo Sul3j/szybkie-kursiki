@@ -208,6 +208,26 @@ class Question(models.Model):
         pattern = re.compile(r'<pre><code class="language-(.*?)">(.*?)</code></pre>', re.DOTALL)
         html = pattern.sub(self._highlight_code, html)
 
+        # Sanitize HTML to prevent XSS attacks while allowing safe markdown tags
+        import bleach
+        allowed_tags = [
+            'p', 'br', 'strong', 'em', 'u', 'code', 'pre', 'blockquote',
+            'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'a', 'div', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+        ]
+        allowed_attrs = {
+            'a': ['href', 'title'],
+            'div': ['class'],
+            'span': ['class'],
+            'code': ['class'],
+            'pre': ['class'],
+        }
+        # Add monaco-code-block to allowed tags since we generate it
+        allowed_tags.append('div')
+        allowed_attrs['div'] = ['class', 'data-language', 'data-code']
+
+        html = bleach.clean(html, tags=allowed_tags, attributes=allowed_attrs, strip=True)
+
         return html
 
     def _highlight_code(self, match):
