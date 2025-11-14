@@ -226,7 +226,7 @@ class Question(models.Model):
         allowed_tags.append('div')
         allowed_attrs['div'] = ['class', 'data-language', 'data-code']
 
-        html = bleach.clean(html, tags=allowed_tags, attributes=allowed_attrs, strip=True)
+        html = bleach.clean(html, tags=allowed_tags, attributes=allowed_attrs, strip=False)
 
         return html
 
