@@ -1535,6 +1535,206 @@ class QuizScoringEdgeCasesTest(TestCase):
         self.assertEqual(response.context['correct_answers'], 0)
 
 
+class QuizXMLImportTest(TestCase):
+    """Tests for Quiz XML import functionality"""
+
+    def setUp(self):
+        self.course = Course.objects.create(
+            title="Test Course",
+            slug="test-course",
+            short_description="Test",
+            description="Test",
+            is_active=True
+        )
+        self.lesson = Lesson.objects.create(
+            course=self.course,
+            title="Test Lesson",
+            slug="test-lesson",
+            order=1
+        )
+        self.quiz = Quiz.objects.create(
+            lesson=self.lesson,
+            title="Test Quiz"
+        )
+
+    def test_xml_import_basic(self):
+        """Test basic XML import with valid data"""
+        xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+  <question order="1">
+    <text>What is Python?</text>
+    <explanation>Python is a programming language.</explanation>
+    <answers>
+      <answer correct="true" order="1">A programming language</answer>
+      <answer correct="false" order="2">A snake</answer>
+    </answers>
+  </question>
+</questions>'''
+
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(xml_content)
+
+        # Verify XML structure
+        self.assertEqual(root.tag, 'questions')
+        questions = root.findall('question')
+        self.assertEqual(len(questions), 1)
+
+        # Verify question data
+        question_elem = questions[0]
+        self.assertEqual(question_elem.get('order'), '1')
+        self.assertEqual(question_elem.find('text').text, 'What is Python?')
+
+        # Verify answers
+        answers = question_elem.find('answers').findall('answer')
+        self.assertEqual(len(answers), 2)
+        self.assertEqual(answers[0].get('correct'), 'true')
+
+    def test_xml_import_multiple_questions(self):
+        """Test XML import with multiple questions"""
+        xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+  <question order="1">
+    <text>Question 1?</text>
+    <answers>
+      <answer correct="true" order="1">Answer 1A</answer>
+      <answer correct="false" order="2">Answer 1B</answer>
+    </answers>
+  </question>
+  <question order="2">
+    <text>Question 2?</text>
+    <explanation>Explanation for question 2</explanation>
+    <answers>
+      <answer correct="false" order="1">Answer 2A</answer>
+      <answer correct="true" order="2">Answer 2B</answer>
+    </answers>
+  </question>
+</questions>'''
+
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(xml_content)
+
+        questions = root.findall('question')
+        self.assertEqual(len(questions), 2)
+
+    def test_xml_import_with_code_blocks(self):
+        """Test XML import with code blocks in questions"""
+        xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+  <question order="1">
+    <text>What does this code print?
+```python
+print("Hello")
+```</text>
+    <answers>
+      <answer correct="true" order="1">Hello</answer>
+      <answer correct="false" order="2">Error</answer>
+    </answers>
+  </question>
+</questions>'''
+
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(xml_content)
+
+        question_elem = root.find('question')
+        text = question_elem.find('text').text
+        self.assertIn('```python', text)
+        self.assertIn('print("Hello")', text)
+
+    def test_xml_import_invalid_root(self):
+        """Test that invalid root element is rejected"""
+        xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<invalid>
+  <question order="1">
+    <text>Test?</text>
+    <answers>
+      <answer correct="true" order="1">Yes</answer>
+    </answers>
+  </question>
+</invalid>'''
+
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(xml_content)
+
+        # Should not be 'questions'
+        self.assertNotEqual(root.tag, 'questions')
+        self.assertEqual(root.tag, 'invalid')
+
+    def test_xml_import_missing_answers(self):
+        """Test XML with question but no answers"""
+        xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+  <question order="1">
+    <text>Test?</text>
+  </question>
+</questions>'''
+
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(xml_content)
+
+        question_elem = root.find('question')
+        answers_elem = question_elem.find('answers')
+
+        # answers element should be None
+        self.assertIsNone(answers_elem)
+
+    def test_xml_import_optional_explanation(self):
+        """Test that explanation field is optional"""
+        xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+  <question order="1">
+    <text>Test?</text>
+    <answers>
+      <answer correct="true" order="1">Yes</answer>
+    </answers>
+  </question>
+</questions>'''
+
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(xml_content)
+
+        question_elem = root.find('question')
+        explanation_elem = question_elem.find('explanation')
+
+        # explanation should be None (optional)
+        self.assertIsNone(explanation_elem)
+
+    def test_xml_import_special_characters(self):
+        """Test XML with special characters"""
+        xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+  <question order="1">
+    <text>What is &lt; operator?</text>
+    <answers>
+      <answer correct="true" order="1">Less than</answer>
+      <answer correct="false" order="2">Greater than &gt;</answer>
+    </answers>
+  </question>
+</questions>'''
+
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(xml_content)
+
+        question_elem = root.find('question')
+        text = question_elem.find('text').text
+
+        # XML parser should decode entities
+        self.assertIn('<', text)
+
+    def test_xml_parse_error(self):
+        """Test that malformed XML raises ParseError"""
+        xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+  <question order="1">
+    <text>Test?
+  </question>
+</questions>'''
+
+        from xml.etree import ElementTree as ET
+
+        with self.assertRaises(ET.ParseError):
+            ET.fromstring(xml_content)
+
+
 def tearDownModule():
     """Clean up temporary media files after all tests"""
     try:

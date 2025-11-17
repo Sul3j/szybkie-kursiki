@@ -1,0 +1,255 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Import pytań z XML - {{ quiz.title }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .import-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .import-header {
+        background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .import-header h1 {
+        margin: 0 0 10px 0;
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    .import-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 16px;
+    }
+
+    .import-form {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+        font-size: 16px;
+    }
+
+    .form-group textarea {
+        width: 100%;
+        min-height: 300px;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 5px;
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        transition: border-color 0.3s;
+    }
+
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #4361ee;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: #4361ee;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #3a0ca3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    .example-section {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        border-left: 5px solid #4361ee;
+    }
+
+    .example-section h2 {
+        margin-top: 0;
+        color: #4361ee;
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+
+    .example-code {
+        background: #282c34;
+        color: #abb2bf;
+        padding: 20px;
+        border-radius: 5px;
+        overflow-x: auto;
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        margin: 15px 0;
+    }
+
+    .instructions {
+        background: #fff3cd;
+        border-left: 5px solid #ffb703;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 25px;
+    }
+
+    .instructions h3 {
+        margin-top: 0;
+        color: #856404;
+        font-size: 18px;
+    }
+
+    .instructions ul {
+        margin: 10px 0;
+        padding-left: 25px;
+    }
+
+    .instructions li {
+        margin: 8px 0;
+        color: #856404;
+    }
+
+    .instructions code {
+        background: rgba(0,0,0,0.1);
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Monaco', 'Courier New', monospace;
+    }
+
+    .xml-tag {
+        color: #e06c75;
+    }
+
+    .xml-attr {
+        color: #d19a66;
+    }
+
+    .xml-value {
+        color: #98c379;
+    }
+
+    .xml-text {
+        color: #abb2bf;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Home</a>
+    &rsaquo; <a href="{% url 'admin:main_app_quiz_changelist' %}">Quizy</a>
+    &rsaquo; <a href="{% url 'admin:main_app_quiz_change' quiz.id %}">{{ quiz.title }}</a>
+    &rsaquo; Import pytań z XML
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="import-container">
+    <div class="import-header">
+        <h1>Import pytań z XML</h1>
+        <p>Quiz: <strong>{{ quiz.title }}</strong></p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" style="padding: 15px; margin-bottom: 20px; border-radius: 5px;
+                {% if message.tags == 'success' %}background: #d4edda; color: #155724; border-left: 5px solid #28a745;
+                {% elif message.tags == 'error' %}background: #f8d7da; color: #721c24; border-left: 5px solid #dc3545;
+                {% elif message.tags == 'warning' %}background: #fff3cd; color: #856404; border-left: 5px solid #ffc107;
+                {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="instructions">
+        <h3>Instrukcje</h3>
+        <ul>
+            <li>Wklej kod XML w poniższe pole tekstowe</li>
+            <li>Format XML musi zawierać element główny <code>&lt;questions&gt;</code></li>
+            <li>Każde pytanie musi mieć atrybut <code>order</code> określający kolejność</li>
+            <li>Pole <code>&lt;explanation&gt;</code> jest opcjonalne</li>
+            <li>Każda odpowiedź musi mieć atrybut <code>correct="true"</code> lub <code>correct="false"</code></li>
+            <li>Pytania mogą zawierać składnię Markdown, w tym bloki kodu</li>
+        </ul>
+    </div>
+
+    <form method="post" class="import-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="xml_content">Kod XML:</label>
+            <textarea name="xml_content" id="xml_content" placeholder="Wklej tutaj kod XML z pytaniami...">{{ xml_content }}</textarea>
+        </div>
+
+        <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Importuj pytania</button>
+            <a href="{% url 'admin:main_app_quiz_change' quiz.id %}" class="btn btn-secondary">Anuluj</a>
+        </div>
+    </form>
+
+    <div class="example-section">
+        <h2>Przykładowy format XML</h2>
+        <p>Poniżej znajduje się przykład poprawnego formatu XML do importu pytań:</p>
+        <pre class="example-code">{{ xml_example }}</pre>
+
+        <h3 style="margin-top: 30px; color: #4361ee;">Struktura XML:</h3>
+        <ul>
+            <li><strong>&lt;questions&gt;</strong> - element główny zawierający wszystkie pytania</li>
+            <li><strong>&lt;question order="..."&gt;</strong> - pojedyncze pytanie z atrybutem kolejności</li>
+            <li><strong>&lt;text&gt;</strong> - treść pytania (może zawierać Markdown)</li>
+            <li><strong>&lt;explanation&gt;</strong> - wyjaśnienie poprawnej odpowiedzi (opcjonalne)</li>
+            <li><strong>&lt;answers&gt;</strong> - kontener dla odpowiedzi</li>
+            <li><strong>&lt;answer correct="true/false" order="..."&gt;</strong> - pojedyncza odpowiedź</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

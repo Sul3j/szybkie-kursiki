@@ -4,6 +4,10 @@ from .forms import CourseForm
 from django.utils.html import format_html
 from django import forms
 from django.db import models
+from django.shortcuts import render, redirect
+from django.urls import path
+from django.contrib import messages
+import xml.etree.ElementTree as ET
 
 admin.site.site_header = "Panel Administracyjny Szybkie Kurski"
 admin.site.site_title = "Szybkie Kurski Admin"
@@ -231,6 +235,138 @@ class QuizAdmin(admin.ModelAdmin):
             color, count
         )
     question_count.short_description = 'Liczba pytań'
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:quiz_id>/import-xml/', self.admin_site.admin_view(self.import_questions_xml), name='quiz_import_xml'),
+        ]
+        return custom_urls + urls
+
+    def import_questions_xml(self, request, quiz_id):
+        """View for importing questions from XML"""
+        quiz = Quiz.objects.get(pk=quiz_id)
+
+        if request.method == 'POST':
+            xml_content = request.POST.get('xml_content', '')
+
+            if not xml_content.strip():
+                messages.error(request, 'Proszę wkleić kod XML.')
+                return render(request, 'admin/quiz_import_xml.html', {'quiz': quiz})
+
+            try:
+                # Parse XML
+                root = ET.fromstring(xml_content)
+
+                if root.tag != 'questions':
+                    messages.error(request, 'Nieprawidłowy format XML. Element główny musi być <questions>.')
+                    return render(request, 'admin/quiz_import_xml.html', {'quiz': quiz, 'xml_content': xml_content})
+
+                # Count questions to be imported
+                question_count = 0
+
+                # Process each question
+                for question_elem in root.findall('question'):
+                    # Get question attributes
+                    order = int(question_elem.get('order', 0))
+
+                    # Get question text
+                    text_elem = question_elem.find('text')
+                    if text_elem is None or not text_elem.text:
+                        messages.warning(request, f'Pominięto pytanie bez tekstu (order={order}).')
+                        continue
+
+                    text = text_elem.text.strip()
+
+                    # Get explanation (optional)
+                    explanation_elem = question_elem.find('explanation')
+                    explanation = explanation_elem.text.strip() if explanation_elem is not None and explanation_elem.text else ''
+
+                    # Create question
+                    question = Question.objects.create(
+                        quiz=quiz,
+                        text=text,
+                        order=order,
+                        explanation=explanation
+                    )
+
+                    # Process answers
+                    answers_elem = question_elem.find('answers')
+                    if answers_elem is None:
+                        messages.warning(request, f'Pytanie "{text[:50]}..." nie ma odpowiedzi.')
+                        question.delete()
+                        continue
+
+                    answer_count = 0
+                    for answer_elem in answers_elem.findall('answer'):
+                        if answer_elem.text:
+                            answer_text = answer_elem.text.strip()
+                            is_correct = answer_elem.get('correct', 'false').lower() == 'true'
+                            answer_order = int(answer_elem.get('order', 0))
+
+                            Answer.objects.create(
+                                question=question,
+                                text=answer_text,
+                                is_correct=is_correct,
+                                order=answer_order
+                            )
+                            answer_count += 1
+
+                    if answer_count == 0:
+                        messages.warning(request, f'Pytanie "{text[:50]}..." nie ma odpowiedzi. Pytanie zostało usunięte.')
+                        question.delete()
+                    else:
+                        question_count += 1
+
+                if question_count > 0:
+                    messages.success(request, f'Pomyślnie zaimportowano {question_count} pytań do quizu "{quiz.title}".')
+                else:
+                    messages.warning(request, 'Nie zaimportowano żadnych pytań.')
+
+                return redirect('admin:main_app_quiz_change', quiz_id)
+
+            except ET.ParseError as e:
+                messages.error(request, f'Błąd parsowania XML: {str(e)}')
+                return render(request, 'admin/quiz_import_xml.html', {'quiz': quiz, 'xml_content': xml_content})
+            except Exception as e:
+                messages.error(request, f'Wystąpił błąd podczas importu: {str(e)}')
+                return render(request, 'admin/quiz_import_xml.html', {'quiz': quiz, 'xml_content': xml_content})
+
+        # GET request - show form
+        xml_example = '''<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+  <question order="1">
+    <text>Jakie jest znaczenie operatora == w Pythonie?</text>
+    <explanation>Operator == porównuje wartości dwóch obiektów, a nie ich tożsamość.</explanation>
+    <answers>
+      <answer correct="true" order="1">Porównuje wartości dwóch obiektów</answer>
+      <answer correct="false" order="2">Przypisuje wartość do zmiennej</answer>
+      <answer correct="false" order="3">Sprawdza typ obiektu</answer>
+      <answer correct="false" order="4">Tworzy nowy obiekt</answer>
+    </answers>
+  </question>
+  <question order="2">
+    <text>Który z poniższych typów danych jest niezmienny (immutable) w Pythonie?</text>
+    <explanation>Tuple jest typem niemutowalnym, co oznacza, że po utworzeniu nie można zmienić jego elementów.</explanation>
+    <answers>
+      <answer correct="false" order="1">List</answer>
+      <answer correct="true" order="2">Tuple</answer>
+      <answer correct="false" order="3">Dictionary</answer>
+      <answer correct="false" order="4">Set</answer>
+    </answers>
+  </question>
+</questions>'''
+
+        return render(request, 'admin/quiz_import_xml.html', {
+            'quiz': quiz,
+            'xml_example': xml_example,
+        })
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        """Override change view to add import XML button"""
+        extra_context = extra_context or {}
+        extra_context['show_import_xml'] = True
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)
 
 class PracticalTaskAdmin(admin.ModelAdmin):
     list_display = ('title', 'lesson', 'has_sections')
