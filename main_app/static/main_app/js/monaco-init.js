@@ -75,12 +75,6 @@
                     lineDecorationsWidth: 0,
                     lineNumbersMinChars: 3,
                     renderLineHighlight: 'none',
-                    scrollbar: {
-                        vertical: 'hidden',
-                        horizontal: 'auto',
-                        useShadows: false,
-                        horizontalScrollbarSize: 10
-                    },
                     overviewRulerLanes: 0,
                     hideCursorInOverviewRuler: true,
                     overviewRulerBorder: false,
@@ -89,8 +83,30 @@
                     fontFamily: "'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace",
                     fontLigatures: true,
                     contextmenu: false,
-                    wordWrap: 'off'
+                    wordWrap: 'off',
+                    // Completely disable vertical scrolling to prevent scroll blocking
+                    scrollbar: {
+                        vertical: 'hidden',
+                        horizontal: 'auto',
+                        useShadows: false,
+                        horizontalScrollbarSize: 10,
+                        alwaysConsumeMouseWheel: false,  // Don't capture mouse wheel events
+                        handleMouseWheel: false  // Don't handle mouse wheel at all
+                    }
                 });
+
+                // Prevent Monaco's scrollable overlay from capturing scroll events
+                // This fixes the issue where page scroll gets blocked when mouse is over code blocks
+                setTimeout(() => {
+                    const domNode = editor.getDomNode();
+                    if (domNode) {
+                        // Find Monaco's scrollable element and disable vertical scroll capture
+                        const scrollableElement = domNode.querySelector('.monaco-scrollable-element');
+                        if (scrollableElement) {
+                            scrollableElement.style.overflowY = 'hidden';
+                        }
+                    }
+                }, 150);
 
                 // Adjust height to actual content after layout
                 setTimeout(() => {

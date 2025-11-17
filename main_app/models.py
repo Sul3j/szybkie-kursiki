@@ -295,7 +295,7 @@ class PracticalTask(models.Model):
     class Meta:
         verbose_name = "Zadanie praktyczne"
         verbose_name_plural = "Zadania praktyczne"
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.title)
@@ -304,7 +304,7 @@ class PracticalTask(models.Model):
             while PracticalTask.objects.filter(slug=self.slug).exists():
                 self.slug = f"{base_slug}-{counter}"
                 counter += 1
-        
+
         extensions = [
             'markdown.extensions.extra',
             'markdown.extensions.fenced_code',  # Removed codehilite for Monaco
@@ -312,13 +312,51 @@ class PracticalTask(models.Model):
             'markdown.extensions.toc'
         ]
 
-        self.content_html = markdown.markdown(self.content_markdown, extensions=extensions)
-        self.instructions_html = markdown.markdown(self.instructions_markdown, extensions=extensions)
-        self.example_html = markdown.markdown(self.example_markdown, extensions=extensions)
-        self.hints_html = markdown.markdown(self.hints_markdown, extensions=extensions)
-        self.solution_html = markdown.markdown(self.solution_markdown, extensions=extensions)
+        # Convert markdown to HTML and apply Monaco code highlighting
+        self.content_html = self._convert_markdown_with_monaco(self.content_markdown, extensions)
+        self.instructions_html = self._convert_markdown_with_monaco(self.instructions_markdown, extensions)
+        self.example_html = self._convert_markdown_with_monaco(self.example_markdown, extensions)
+        self.hints_html = self._convert_markdown_with_monaco(self.hints_markdown, extensions)
+        self.solution_html = self._convert_markdown_with_monaco(self.solution_markdown, extensions)
 
         super().save(*args, **kwargs)
+
+    def _convert_markdown_with_monaco(self, markdown_text, extensions):
+        """Convert markdown to HTML and replace code blocks with Monaco editor containers"""
+        if not markdown_text:
+            return ""
+
+        html = markdown.markdown(markdown_text, extensions=extensions)
+
+        # Replace code blocks with Monaco editor containers
+        pattern = re.compile(r'<pre><code class="language-(.*?)">(.*?)</code></pre>', re.DOTALL)
+        html = pattern.sub(self._highlight_code, html)
+
+        return html
+
+    def _highlight_code(self, match):
+        """Replace code block with Monaco editor container"""
+        language = match.group(1)
+        code = match.group(2)
+
+        # Unescape HTML entities in code
+        import html
+        code = html.unescape(code)
+
+        # Map language aliases to Monaco language IDs
+        language_map = {
+            'py': 'python', 'js': 'javascript', 'ts': 'typescript',
+            'html': 'html', 'css': 'css', 'bash': 'shell', 'sh': 'shell',
+            'shell': 'shell', 'sql': 'sql', 'yaml': 'yaml', 'yml': 'yaml',
+            'json': 'json', 'xml': 'xml', 'dockerfile': 'dockerfile',
+            'docker': 'dockerfile', 'csharp': 'csharp', 'cs': 'csharp',
+            'cpp': 'cpp', 'c++': 'cpp', 'php': 'php',
+        }
+
+        monaco_language = language_map.get(language.lower(), language.lower())
+        escaped_code = html.escape(code)
+
+        return f'<div class="monaco-code-block" data-language="{monaco_language}" data-code="{escaped_code}"></div>'
 
     def __str__(self):
         return self.title

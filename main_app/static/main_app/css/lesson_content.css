@@ -402,6 +402,15 @@
     padding-top: 15px;
 }
 
+/* Prevent Monaco from capturing vertical scroll - allows page scrolling over code blocks */
+.monaco-code-block .monaco-scrollable-element {
+    overflow-y: hidden !important;
+}
+
+.monaco-code-block .monaco-editor .overflow-guard {
+    overflow: hidden !important;
+}
+
 .monaco-editor-container {
     width: 100%;
     border-radius: 12px;
