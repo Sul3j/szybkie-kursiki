@@ -3,11 +3,11 @@
 set -e
 
 echo "========================================="
-echo "Starting deployment process..."
+echo "Starting Szybkie Kursiki deployment..."
 echo "========================================="
 
 # Navigate to project directory
-cd /home/deploy/szybkie-kursiki || exit 1
+cd /opt/szybkie-kursiki || exit 1
 
 # Pull latest changes from GitHub
 echo "Pulling latest changes from GitHub..."

@@ -22,7 +22,7 @@ jobs:
         key: ${{ secrets.VPS_SSH_KEY }}
         port: ${{ secrets.VPS_PORT }}
         script: |
-          cd /home/deploy/szybkie-kursiki
+          cd /opt/szybkie-kursiki
           git pull origin main
 
           # Create .env file from secrets
@@ -42,6 +42,10 @@ jobs:
 
           # Run deployment script
           bash deploy.sh
+
+          # Restart nginx-proxy to pick up changes (if needed)
+          cd /opt/vps
+          docker compose -f docker-compose.nginx-proxy.yml restart nginx-proxy
 
     - name: Deployment status
       if: success()
