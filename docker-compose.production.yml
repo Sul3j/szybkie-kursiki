@@ -39,6 +39,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      COURSE_IMPORT_TOKEN: ${COURSE_IMPORT_TOKEN}
     volumes:
       - kursiki_static_volume:/app/staticfiles
       - kursiki_media_volume:/app/media

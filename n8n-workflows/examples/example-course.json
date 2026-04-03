@@ -1,0 +1,265 @@
+{
+  "course": {
+    "title": "Python - Podstawy Programowania",
+    "short_description": "Naucz się programować w Python od podstaw. Kurs dla początkujących bez wcześniejszego doświadczenia.",
+    "description": "Kompleksowy kurs Python dla osób rozpoczynających swoją przygodę z programowaniem. Dowiesz się jak pisać kod, zrozumiesz podstawowe koncepcje programowania i nauczysz się rozwiązywać problemy używając Pythona. Kurs zawiera praktyczne przykłady, quizy i zadania do samodzielnego rozwiązania.",
+    "icon": "fab fa-python",
+    "tags": ["Python", "Podstawy", "Programowanie", "Początkujący"]
+  },
+  "lessons": [
+    {
+      "title": "Wprowadzenie do Python - instalacja i pierwsze kroki",
+      "order": 0,
+      "content_markdown": "# Wprowadzenie do Python\n\nPython to jeden z najpopularniejszych języków programowania na świecie. Jest używany w wielu dziedzinach - od aplikacji webowych, przez analizę danych, aż po sztuczną inteligencję.\n\n## Dlaczego Python?\n\n- **Prosty i czytelny** - składnia Pythona jest intuicyjna i łatwa do nauczenia\n- **Wszechstronny** - można w nim tworzyć aplikacje webowe, gry, analizować dane\n- **Popularny** - duża społeczność, wiele bibliotek i frameworków\n- **Świetny dla początkujących** - idealny jako pierwszy język programowania\n\n## Instalacja Python\n\n### Windows\n\n1. Pobierz instalator z [python.org](https://python.org)\n2. Uruchom instalator\n3. **WAŻNE**: Zaznacz \"Add Python to PATH\"\n4. Kliknij \"Install Now\"\n\n### macOS\n\n```bash\n# Użyj Homebrew\nbrew install python3\n```\n\n### Linux\n\n```bash\n# Ubuntu/Debian\nsudo apt update\nsudo apt install python3 python3-pip\n```\n\n## Sprawdzenie instalacji\n\nOtwórz terminal i wpisz:\n\n```bash\npython --version\n# lub\npython3 --version\n```\n\nPowinno wyświetlić się coś w stylu: `Python 3.12.0`\n\n## Pierwszy program\n\nUtwórz plik `hello.py` i wpisz:\n\n```python\nprint(\"Hello, World!\")\n```\n\nUruchom:\n\n```bash\npython hello.py\n```\n\nGratulacje! Napisałeś swój pierwszy program w Python! 🎉\n\n## Python Interactive Shell\n\nPython ma interaktywną powłokę (REPL - Read-Eval-Print Loop), która pozwala na natychmiastowe testowanie kodu:\n\n```bash\npython\n```\n\nTeraz możesz wpisywać kod i od razu widzieć wyniki:\n\n```python\n>>> 2 + 2\n4\n>>> print(\"Witaj\")\nWitaj\n>>> exit()\n```\n\n## Edytory kodu\n\nDo pisania kodu Python polecam:\n\n- **VS Code** - darmowy, lekki, z rozszerzeniami dla Python\n- **PyCharm** - profesjonalne IDE dedykowane Python\n- **Sublime Text** - szybki edytor tekstu\n\n## Podsumowanie\n\nW tej lekcji:\n- Zainstalowałeś Python\n- Napisałeś pierwszy program\n- Poznałeś Python Interactive Shell\n\nW następnej lekcji poznasz zmienne i typy danych!",
+      "quiz": {
+        "title": "Quiz - Wprowadzenie do Python",
+        "description": "Sprawdź czy pamiętasz podstawowe informacje o Python",
+        "questions": [
+          {
+            "text": "Co jest konieczne zaznaczyć podczas instalacji Python na Windows?",
+            "order": 0,
+            "explanation": "Zaznaczenie 'Add Python to PATH' pozwala na uruchamianie Python z dowolnego miejsca w terminalu.",
+            "answers": [
+              {
+                "text": "Add Python to PATH",
+                "is_correct": true,
+                "order": 0
+              },
+              {
+                "text": "Install for all users",
+                "is_correct": false,
+                "order": 1
+              },
+              {
+                "text": "Download documentation",
+                "is_correct": false,
+                "order": 2
+              },
+              {
+                "text": "Create shortcuts",
+                "is_correct": false,
+                "order": 3
+              }
+            ]
+          },
+          {
+            "text": "Jaką komendę używamy do sprawdzenia wersji Python?",
+            "order": 1,
+            "explanation": "Komenda 'python --version' wyświetla zainstalowaną wersję Pythona.",
+            "answers": [
+              {
+                "text": "python --version",
+                "is_correct": true,
+                "order": 0
+              },
+              {
+                "text": "python -v",
+                "is_correct": false,
+                "order": 1
+              },
+              {
+                "text": "check python",
+                "is_correct": false,
+                "order": 2
+              },
+              {
+                "text": "python info",
+                "is_correct": false,
+                "order": 3
+              }
+            ]
+          },
+          {
+            "text": "Co oznacza skrót REPL?",
+            "order": 2,
+            "explanation": "REPL to Read-Eval-Print Loop - interaktywna powłoka, która czyta kod, wykonuje go, wyświetla wynik i czeka na kolejne polecenie.",
+            "answers": [
+              {
+                "text": "Read-Eval-Print Loop",
+                "is_correct": true,
+                "order": 0
+              },
+              {
+                "text": "Repeat-Execute-Print-Load",
+                "is_correct": false,
+                "order": 1
+              },
+              {
+                "text": "Run-Execute-Process-Loop",
+                "is_correct": false,
+                "order": 2
+              },
+              {
+                "text": "Read-Execute-Parse-List",
+                "is_correct": false,
+                "order": 3
+              }
+            ]
+          },
+          {
+            "text": "Jaką funkcję używamy do wyświetlania tekstu w Python?",
+            "order": 3,
+            "explanation": "Funkcja print() służy do wyświetlania danych na ekranie.",
+            "answers": [
+              {
+                "text": "print()",
+                "is_correct": true,
+                "order": 0
+              },
+              {
+                "text": "display()",
+                "is_correct": false,
+                "order": 1
+              },
+              {
+                "text": "show()",
+                "is_correct": false,
+                "order": 2
+              },
+              {
+                "text": "echo()",
+                "is_correct": false,
+                "order": 3
+              }
+            ]
+          }
+        ]
+      },
+      "practical_task": {
+        "title": "Zadanie - Instalacja i pierwszy program",
+        "content_markdown": "# Zadanie praktyczne\n\nTwoim zadaniem jest zainstalowanie Pythona i napisanie programu, który wyświetla informacje o Tobie.",
+        "instructions_markdown": "## Instrukcje\n\n1. Upewnij się, że Python jest zainstalowany (sprawdź wersję)\n2. Utwórz plik `about_me.py`\n3. Napisz program, który wyświetla:\n   - Twoje imię\n   - Wiek\n   - Dlaczego chcesz nauczyć się Python\n4. Uruchom program\n5. Zrób screenshot wyniku",
+        "example_markdown": "## Przykład\n\nProgram powinien wyświetlać coś w stylu:\n\n```\nCześć! Nazywam się Anna.\nMam 25 lat.\nChcę nauczyć się Python, żeby tworzyć aplikacje webowe.\n```",
+        "hints_markdown": "## Wskazówki\n\n- Użyj funkcji `print()` do wyświetlania tekstu\n- Każda linia tekstu to osobne wywołanie `print()`\n- Pamiętaj o cudzysłowach wokół tekstu\n- Zapisz plik z rozszerzeniem `.py`",
+        "solution_markdown": "## Rozwiązanie\n\n```python\nprint(\"Cześć! Nazywam się Anna.\")\nprint(\"Mam 25 lat.\")\nprint(\"Chcę nauczyć się Python, żeby tworzyć aplikacje webowe.\")\n```\n\n### Wyjaśnienie\n\n- Każde wywołanie `print()` wyświetla tekst w nowej linii\n- Tekst musi być w cudzysłowach (pojedynczych `'` lub podwójnych `\"`)\n- Po uruchomieniu `python about_me.py` zobaczysz wszystkie trzy linie na ekranie"
+      }
+    },
+    {
+      "title": "Zmienne i typy danych",
+      "order": 1,
+      "content_markdown": "# Zmienne i typy danych\n\nZmienne to podstawowy element każdego programu. Pozwalają przechowywać dane i używać ich później.\n\n## Czym jest zmienna?\n\nZmienna to nazwa, która odnosi się do wartości przechowywanej w pamięci komputera.\n\n```python\nname = \"Jan\"\nage = 25\nis_student = True\n```\n\n## Nazywanie zmiennych\n\n### Zasady:\n\n- Zaczynaj od litery lub podkreślnika `_`\n- Może zawierać litery, cyfry, podkreślniki\n- **Nie może** zawierać spacji\n- Wielkość liter ma znaczenie (`name` ≠ `Name`)\n\n### Dobre praktyki:\n\n```python\n# Dobre ✅\nuser_name = \"Jan\"\ntotal_price = 99.99\nis_active = True\n\n# Złe ❌\n1st_name = \"Jan\"  # nie może zaczynać się od cyfry\nuser name = \"Jan\"  # nie może zawierać spacji\nclass = \"Python\"  # 'class' to słowo kluczowe\n```\n\n## Podstawowe typy danych\n\n### 1. String (str) - tekst\n\n```python\nfirst_name = \"Jan\"\nlast_name = 'Kowalski'\nmessage = \"\"\"To jest\nwielolinijkowy\ntekst\"\"\"\n```\n\n### 2. Integer (int) - liczby całkowite\n\n```python\nage = 25\nyear = 2024\ntemperature = -5\n```\n\n### 3. Float - liczby zmiennoprzecinkowe\n\n```python\nprice = 99.99\ntemperature = 36.6\npi = 3.14159\n```\n\n### 4. Boolean (bool) - wartości logiczne\n\n```python\nis_student = True\nhas_license = False\nis_active = True\n```\n\n## Sprawdzanie typu zmiennej\n\n```python\nname = \"Jan\"\nprint(type(name))  # <class 'str'>\n\nage = 25\nprint(type(age))   # <class 'int'>\n\nprice = 99.99\nprint(type(price)) # <class 'float'>\n```\n\n## Konwersja typów\n\n```python\n# String na int\nage_str = \"25\"\nage_int = int(age_str)\nprint(age_int + 5)  # 30\n\n# Int na string\nage = 25\nage_str = str(age)\nprint(\"Mam \" + age_str + \" lat\")\n\n# String na float\nprice_str = \"99.99\"\nprice = float(price_str)\nprint(price * 2)  # 199.98\n```\n\n## Operacje na zmiennych\n\n### Liczby:\n\n```python\na = 10\nb = 3\n\nprint(a + b)   # 13 - dodawanie\nprint(a - b)   # 7  - odejmowanie\nprint(a * b)   # 30 - mnożenie\nprint(a / b)   # 3.333... - dzielenie\nprint(a // b)  # 3  - dzielenie całkowite\nprint(a % b)   # 1  - reszta z dzielenia\nprint(a ** b)  # 1000 - potęgowanie\n```\n\n### Stringi:\n\n```python\nfirst_name = \"Jan\"\nlast_name = \"Kowalski\"\n\n# Łączenie\nfull_name = first_name + \" \" + last_name\nprint(full_name)  # Jan Kowalski\n\n# Powtarzanie\nprint(\"Ha\" * 3)  # HaHaHa\n\n# Długość\nprint(len(full_name))  # 12\n```\n\n## Input - pobieranie danych od użytkownika\n\n```python\nname = input(\"Jak masz na imię? \")\nprint(\"Cześć, \" + name + \"!\")\n\nage = input(\"Ile masz lat? \")\nage = int(age)  # konwersja na int\nprint(\"Za rok będziesz mieć\", age + 1, \"lat\")\n```\n\n## Podsumowanie\n\nW tej lekcji poznałeś:\n- Jak tworzyć i nazywać zmienne\n- Podstawowe typy danych (str, int, float, bool)\n- Konwersję typów\n- Operacje na zmiennych\n- Pobieranie danych od użytkownika",
+      "quiz": {
+        "title": "Quiz - Zmienne i typy danych",
+        "description": "Sprawdź swoją wiedzę o zmiennych i typach danych",
+        "questions": [
+          {
+            "text": "Która nazwa zmiennej jest poprawna?",
+            "order": 0,
+            "explanation": "user_name jest poprawną nazwą - zaczyna się od litery, zawiera podkreślnik i litery.",
+            "answers": [
+              {
+                "text": "user_name",
+                "is_correct": true,
+                "order": 0
+              },
+              {
+                "text": "1st_name",
+                "is_correct": false,
+                "order": 1
+              },
+              {
+                "text": "user name",
+                "is_correct": false,
+                "order": 2
+              },
+              {
+                "text": "class",
+                "is_correct": false,
+                "order": 3
+              }
+            ]
+          },
+          {
+            "text": "Jaki typ danych ma zmienna: `price = 99.99`?",
+            "order": 1,
+            "explanation": "Liczby z częścią dziesiętną (z kropką) to typ float.",
+            "answers": [
+              {
+                "text": "float",
+                "is_correct": true,
+                "order": 0
+              },
+              {
+                "text": "int",
+                "is_correct": false,
+                "order": 1
+              },
+              {
+                "text": "str",
+                "is_correct": false,
+                "order": 2
+              },
+              {
+                "text": "decimal",
+                "is_correct": false,
+                "order": 3
+              }
+            ]
+          },
+          {
+            "text": "Co wyświetli: `print(10 // 3)`?",
+            "order": 2,
+            "explanation": "Operator // to dzielenie całkowite - zwraca część całkowitą wyniku dzielenia.",
+            "answers": [
+              {
+                "text": "3",
+                "is_correct": true,
+                "order": 0
+              },
+              {
+                "text": "3.333...",
+                "is_correct": false,
+                "order": 1
+              },
+              {
+                "text": "1",
+                "is_correct": false,
+                "order": 2
+              },
+              {
+                "text": "Błąd",
+                "is_correct": false,
+                "order": 3
+              }
+            ]
+          },
+          {
+            "text": "Jak przekonwertować string na int?",
+            "order": 3,
+            "explanation": "Funkcja int() konwertuje wartość na liczbę całkowitą.",
+            "answers": [
+              {
+                "text": "int(value)",
+                "is_correct": true,
+                "order": 0
+              },
+              {
+                "text": "str(value)",
+                "is_correct": false,
+                "order": 1
+              },
+              {
+                "text": "float(value)",
+                "is_correct": false,
+                "order": 2
+              },
+              {
+                "text": "convert(value)",
+                "is_correct": false,
+                "order": 3
+              }
+            ]
+          }
+        ]
+      },
+      "practical_task": {
+        "title": "Zadanie - Kalkulator wieku",
+        "content_markdown": "# Zadanie - Kalkulator wieku\n\nStwórz program, który:\n1. Pyta użytkownika o rok urodzenia\n2. Oblicza wiek użytkownika\n3. Wyświetla informację o wieku\n4. Mówi w którym roku użytkownik będzie miał 100 lat",
+        "instructions_markdown": "## Instrukcje\n\n1. Użyj `input()` aby pobrać rok urodzenia\n2. Przekonwertuj rok na int\n3. Oblicz obecny wiek (2024 - rok_urodzenia)\n4. Wyświetl wynik\n5. Oblicz w którym roku użytkownik będzie miał 100 lat",
+        "example_markdown": "## Przykład działania\n\n```\nW którym roku się urodziłeś? 1995\nMasz 29 lat.\nW roku 2095 będziesz mieć 100 lat!\n```",
+        "hints_markdown": "## Wskazówki\n\n- Obecny rok to 2024\n- Pamiętaj o konwersji input() na int\n- Rok 100 urodzin = rok_urodzenia + 100\n- Możesz użyć f-stringów do formatowania: `f\"Masz {age} lat\"`",
+        "solution_markdown": "## Rozwiązanie\n\n```python\n# Pobierz rok urodzenia\nbirth_year = input(\"W którym roku się urodziłeś? \")\nbirth_year = int(birth_year)\n\n# Oblicz wiek\ncurrent_year = 2024\nage = current_year - birth_year\n\n# Wyświetl informacje\nprint(f\"Masz {age} lat.\")\n\n# Oblicz rok 100 urodzin\nyear_100 = birth_year + 100\nprint(f\"W roku {year_100} będziesz mieć 100 lat!\")\n```\n\n### Wyjaśnienie\n\n1. `input()` pobiera dane jako string\n2. `int()` konwertuje string na liczbę\n3. Odejmujemy rok urodzenia od obecnego roku\n4. f-stringi (`f\"...\"`) pozwalają wstawiać zmienne do tekstu\n5. Rok 100 urodzin to rok urodzenia + 100"
+      }
+    }
+  ]
+}

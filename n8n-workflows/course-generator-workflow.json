@@ -1,0 +1,230 @@
+{
+  "name": "Szybkie Kursiki - AI Course Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "anthropicApi",
+        "resource": "message",
+        "model": "claude-sonnet-4-5-20250929",
+        "text": "={{ $json.coursePrompt }}",
+        "options": {
+          "systemMessage": "Jesteś ekspertem w tworzeniu kursów edukacyjnych online. Twoim zadaniem jest wygenerowanie kompletnej struktury kursu w formacie JSON.\n\nKurs musi zawierać:\n1. Podstawowe informacje o kursie (tytuł, krótki opis, pełny opis, ikona Font Awesome, tagi)\n2. Serię lekcji (minimum 3-5 lekcji)\n3. Każda lekcja MUSI zawierać:\n   - Tytuł\n   - Kolejność (order)\n   - Treść w formacie Markdown (content_markdown) - szczegółowa, merytoryczna treść lekcji z przykładami kodu\n   - Quiz z 3-5 pytaniami wielokrotnego wyboru\n   - Zadanie praktyczne (practical_task) z przykładami i rozwiązaniem\n\nFormat JSON:\n```json\n{\n  \"course\": {\n    \"title\": \"Nazwa kursu\",\n    \"short_description\": \"Krótki opis kursu (max 200 znaków)\",\n    \"description\": \"Pełny opis kursu - czego się nauczysz, dla kogo jest kurs\",\n    \"icon\": \"fas fa-code\",\n    \"tags\": [\"Python\", \"Backend\", \"API\"]\n  },\n  \"lessons\": [\n    {\n      \"title\": \"Tytuł lekcji\",\n      \"order\": 0,\n      \"content_markdown\": \"# Wprowadzenie\\n\\nTreść lekcji w markdown...\\n\\n```python\\nprint('Hello World')\\n```\\n\\n## Kolejna sekcja\\n\\nWięcej treści...\",\n      \"quiz\": {\n        \"title\": \"Quiz - Tytuł lekcji\",\n        \"description\": \"Sprawdź swoją wiedzę\",\n        \"questions\": [\n          {\n            \"text\": \"Treść pytania?\",\n            \"order\": 0,\n            \"explanation\": \"Wyjaśnienie poprawnej odpowiedzi\",\n            \"answers\": [\n              {\n                \"text\": \"Odpowiedź 1\",\n                \"is_correct\": true,\n                \"order\": 0\n              },\n              {\n                \"text\": \"Odpowiedź 2\",\n                \"is_correct\": false,\n                \"order\": 1\n              }\n            ]\n          }\n        ]\n      },\n      \"practical_task\": {\n        \"title\": \"Zadanie praktyczne - Tytuł\",\n        \"content_markdown\": \"# Zadanie\\n\\nOpis zadania do wykonania...\",\n        \"instructions_markdown\": \"## Instrukcje\\n\\n1. Krok 1\\n2. Krok 2\",\n        \"example_markdown\": \"## Przykład\\n\\n```python\\nprzykładowy_kod()\\n```\",\n        \"hints_markdown\": \"## Wskazówki\\n\\n- Wskazówka 1\\n- Wskazówka 2\",\n        \"solution_markdown\": \"## Rozwiązanie\\n\\n```python\\nrozwiazanie_zadania()\\n```\\n\\nWyjaśnienie...\"\n      }\n    }\n  ]\n}\n```\n\nWAŻNE:\n- Treść lekcji (content_markdown) powinna być szczegółowa (min 500 słów)\n- Używaj prawidłowego formatowania Markdown\n- Bloki kodu muszą mieć określony język (```python, ```javascript, itp.)\n- Każde pytanie w quizie musi mieć co najmniej 4 odpowiedzi\n- Tylko jedna odpowiedź może być poprawna (is_correct: true)\n- Zadania praktyczne muszą być konkretne i wykonalne\n- Używaj polskich znaków (ą, ć, ę, ł, ń, ó, ś, ź, ż)\n\nODPOWIEDŹ WYŁĄCZNIE POPRAWNYM JSON-em, bez dodatkowych komentarzy ani wyjaśnień."
+        }
+      },
+      "id": "anthropic-claude",
+      "name": "Generate Course with Claude",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract JSON from Claude's response\nconst response = $input.first().json.response;\n\n// Try to parse the response\nlet courseData;\n\ntry {\n  // Check if response contains markdown code blocks\n  const jsonMatch = response.match(/```(?:json)?\\s*([\\s\\S]*?)```/);\n  \n  if (jsonMatch) {\n    // Extract JSON from code block\n    courseData = JSON.parse(jsonMatch[1].trim());\n  } else {\n    // Try to parse directly\n    courseData = JSON.parse(response);\n  }\n  \n  // Validate required fields\n  if (!courseData.course || !courseData.course.title) {\n    throw new Error('Missing course title');\n  }\n  \n  if (!courseData.lessons || courseData.lessons.length === 0) {\n    throw new Error('No lessons provided');\n  }\n  \n  // Ensure all lessons have required fields\n  courseData.lessons.forEach((lesson, index) => {\n    if (!lesson.title) {\n      throw new Error(`Lesson ${index} missing title`);\n    }\n    if (lesson.order === undefined) {\n      lesson.order = index;\n    }\n    if (!lesson.content_markdown) {\n      throw new Error(`Lesson ${index} missing content_markdown`);\n    }\n  });\n  \n  return {\n    json: courseData\n  };\n  \n} catch (error) {\n  throw new Error(`Failed to parse Claude response: ${error.message}\\n\\nResponse: ${response}`);\n}"
+      },
+      "id": "code-parser",
+      "name": "Parse and Validate JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.DJANGO_APP_URL }}/api/import-course/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Import-Token",
+              "value": "={{ $env.COURSE_IMPORT_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "body": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "http-import",
+      "name": "Import Course to Django",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "operation": "equals",
+              "value2": "ok"
+            }
+          ]
+        }
+      },
+      "id": "check-success",
+      "name": "Check Import Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "success"
+            },
+            {
+              "name": "message",
+              "value": "Kurs został pomyślnie utworzony!"
+            },
+            {
+              "name": "course_title",
+              "value": "={{ $json.course_title }}"
+            },
+            {
+              "name": "course_slug",
+              "value": "={{ $json.course_slug }}"
+            },
+            {
+              "name": "lessons_count",
+              "value": "={{ $json.lessons_count }}"
+            },
+            {
+              "name": "admin_url",
+              "value": "={{ $env.DJANGO_APP_URL }}{{ $json.admin_url }}"
+            },
+            {
+              "name": "preview_url",
+              "value": "={{ $env.DJANGO_APP_URL }}/course/{{ $json.course_slug }}/"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "success-output",
+      "name": "Success Output",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "error"
+            },
+            {
+              "name": "message",
+              "value": "Nie udało się zaimportować kursu"
+            },
+            {
+              "name": "error",
+              "value": "={{ $json.error || 'Unknown error' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "error-output",
+      "name": "Error Output",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [1250, 400]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate Course with Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Course with Claude": {
+      "main": [
+        [
+          {
+            "node": "Parse and Validate JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse and Validate JSON": {
+      "main": [
+        [
+          {
+            "node": "Import Course to Django",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Import Course to Django": {
+      "main": [
+        [
+          {
+            "node": "Check Import Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Import Success": {
+      "main": [
+        [
+          {
+            "node": "Success Output",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-02-02T00:00:00.000Z",
+  "versionId": "1"
+}

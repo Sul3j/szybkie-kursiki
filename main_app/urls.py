@@ -11,4 +11,5 @@ urlpatterns = [
     path('course/<slug:course_slug>/<slug:lesson_slug>/quiz/submit/', views.quiz_submit, name='quiz_submit'),
     path('course/<slug:course_slug>/<slug:lesson_slug>/task/', views.practical_task_detail, name='practical_task_detail'),
     path('blog/<slug:slug>/', views.blog_post_detail, name='blog_post_detail'),
+    path('api/import-course/', views.import_course, name='import_course'),
 ]
