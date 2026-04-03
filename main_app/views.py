@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.text import slugify
-from .models import Course, Tag, Lesson, Quiz, Question, Answer, PracticalTask, BlogPost, VideoPlaylist
+from .models import Course, Tag, Lesson, Quiz, Question, Answer, PracticalTask, BlogPost, VideoPlaylist, Project
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +23,10 @@ def home(request):
     video_playlists = VideoPlaylist.objects.filter(
         is_active=True
     ).only('id', 'title', 'youtube_playlist_url', 'thumbnail', 'description', 'order').order_by('order', '-created_at')[:6]
+
+    projects = Project.objects.filter(
+        is_active=True
+    ).order_by('order', '-created_at')[:6]
 
     # Calculate real statistics for hero section (cached for performance)
     from django.core.cache import cache
@@ -46,6 +50,7 @@ def home(request):
         'featured_courses': featured_courses,
         'recent_posts': recent_posts,
         'video_playlists': video_playlists,
+        'projects': projects,
         'total_courses': total_courses,
         'total_lessons': total_lessons,
         'total_quizzes': total_quizzes,

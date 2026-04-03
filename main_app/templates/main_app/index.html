@@ -373,6 +373,66 @@
     </div>
 </section>
 
+<section id="projects" class="projects">
+    <div class="projects-particles"></div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Projekty z zajęć</h2>
+            <p class="section-description">
+                Przykładowe prace wykonywane przez uczniów podczas naszych kursów
+            </p>
+        </div>
+
+        {% if projects %}
+        <div class="projects-grid">
+            {% for project in projects %}
+            <div class="project-card scroll-reveal">
+                <div class="project-card-glow"></div>
+                <div class="project-card-gradient"></div>
+
+                <div class="project-header">
+                    <div class="project-badge">
+                        <i class="{{ project.badge_icon }}"></i>
+                        <span>{{ project.badge_text }}</span>
+                    </div>
+                </div>
+
+                <div class="project-body">
+                    <h3 class="project-title">{{ project.title }}</h3>
+                    <p class="project-description">{{ project.description }}</p>
+
+                    <div class="project-tech">
+                        {% for tech in project.get_technologies_list %}
+                        <span class="tech-tag">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="project-links">
+                        {% if project.live_demo_url %}
+                        <a href="{{ project.live_demo_url }}" target="_blank" rel="noopener noreferrer" class="project-link project-link-live">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>Live Demo</span>
+                        </a>
+                        {% endif %}
+                        {% if project.github_url %}
+                        <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer" class="project-link project-link-github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-projects">
+            <p>Brak dostępnych projektów.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
 <section id="posts" class="posts">
     <div class="posts-particles"></div>
     <div class="container">

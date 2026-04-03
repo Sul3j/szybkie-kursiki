@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tag, Course, Lesson, LessonContent, Quiz, PracticalTask, Question, Answer, BlogPost, VideoPlaylist
+from .models import Tag, Course, Lesson, LessonContent, Quiz, PracticalTask, Question, Answer, BlogPost, VideoPlaylist, Project
 from .forms import CourseForm
 from django.utils.html import format_html
 from django import forms
@@ -509,6 +509,58 @@ class VideoPlaylistAdmin(admin.ModelAdmin):
         return '-'
     thumbnail_preview.short_description = 'Miniaturka'
 
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('title', 'badge_text', 'order', 'status_badge', 'has_links', 'created_at')
+    list_filter = ('is_active', 'badge_text', 'created_at')
+    search_fields = ('title', 'description', 'technologies')
+    list_editable = ('order',)
+    list_per_page = 20
+    date_hierarchy = 'created_at'
+
+    fieldsets = (
+        ('Podstawowe informacje', {
+            'fields': ('title', 'description', 'order', 'is_active')
+        }),
+        ('Badge (etykieta)', {
+            'fields': ('badge_icon', 'badge_text'),
+            'description': format_html(
+                '<div style="background: #f0f8ff; padding: 15px; border-left: 4px solid #4361ee; margin-bottom: 20px;">'
+                '<strong>Wskazówka:</strong> Badge to mała etykieta wyświetlana na karcie projektu (np. "Web App", "API")'
+                '</div>'
+            )
+        }),
+        ('Technologie', {
+            'fields': ('technologies',),
+            'description': format_html(
+                '<div style="background: #fff3cd; padding: 15px; border-left: 4px solid #ffb703; margin-bottom: 20px;">'
+                '<strong>Format:</strong> Wpisz technologie oddzielone przecinkami, np. "HTML, CSS, JavaScript, React"'
+                '</div>'
+            )
+        }),
+        ('Linki', {
+            'fields': ('live_demo_url', 'github_url'),
+            'description': 'Opcjonalne linki do projektu'
+        }),
+    )
+
+    def status_badge(self, obj):
+        if obj.is_active:
+            return format_html('<span style="background-color: #28a745; color: white; padding: 3px 10px; border-radius: 3px;">Aktywny</span>')
+        return format_html('<span style="background-color: #dc3545; color: white; padding: 3px 10px; border-radius: 3px;">Nieaktywny</span>')
+    status_badge.short_description = 'Status'
+
+    def has_links(self, obj):
+        links = []
+        if obj.live_demo_url:
+            links.append('Demo')
+        if obj.github_url:
+            links.append('GitHub')
+        if links:
+            return format_html('<span style="color: #28a745;">{}</span>', ', '.join(links))
+        return format_html('<span style="color: #6c757d;">Brak</span>')
+    has_links.short_description = 'Linki'
+
+
 admin.site.register(Quiz, QuizAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Lesson, LessonAdmin)
@@ -517,6 +569,7 @@ admin.site.register(Course, CourseAdmin)
 admin.site.register(PracticalTask, PracticalTaskAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(VideoPlaylist, VideoPlaylistAdmin)
+admin.site.register(Project, ProjectAdmin)
 
 
 

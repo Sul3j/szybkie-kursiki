@@ -435,6 +435,70 @@ class BlogPost(models.Model):
 
         return f'<div class="monaco-code-block" data-language="{monaco_language}" data-code="{escaped_code}"></div>'
 
+class Project(models.Model):
+    BADGE_CHOICES = [
+        ('fas fa-laptop-code', 'Web App'),
+        ('fas fa-calculator', 'Kalkulator'),
+        ('fas fa-cloud-sun', 'API'),
+        ('fas fa-mobile-alt', 'Mobile App'),
+        ('fas fa-gamepad', 'Gra'),
+        ('fas fa-robot', 'AI/ML'),
+        ('fas fa-database', 'Baza danych'),
+        ('fas fa-terminal', 'CLI'),
+        ('fas fa-puzzle-piece', 'Plugin'),
+        ('fas fa-tools', 'Narzędzie'),
+    ]
+
+    title = models.CharField(max_length=200, verbose_name="Tytuł projektu")
+    badge_icon = models.CharField(
+        max_length=50,
+        choices=BADGE_CHOICES,
+        default='fas fa-laptop-code',
+        verbose_name="Ikona badge'a",
+        help_text="Ikona FontAwesome wyświetlana w badge'u"
+    )
+    badge_text = models.CharField(
+        max_length=50,
+        default='Web App',
+        verbose_name="Tekst badge'a",
+        help_text="Krótki tekst opisujący typ projektu (np. Web App, API)"
+    )
+    description = models.TextField(max_length=300, verbose_name="Opis projektu")
+    technologies = models.CharField(
+        max_length=300,
+        verbose_name="Technologie",
+        help_text="Lista technologii oddzielona przecinkami (np. HTML, CSS, JavaScript)"
+    )
+    live_demo_url = models.URLField(
+        blank=True,
+        null=True,
+        verbose_name="Link do Live Demo",
+        help_text="URL do działającej wersji projektu (opcjonalne)"
+    )
+    github_url = models.URLField(
+        blank=True,
+        null=True,
+        verbose_name="Link do GitHub",
+        help_text="URL do repozytorium GitHub (opcjonalne)"
+    )
+    order = models.PositiveIntegerField(default=0, verbose_name="Kolejność")
+    is_active = models.BooleanField(default=True, verbose_name="Aktywny")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data utworzenia")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Data aktualizacji")
+
+    class Meta:
+        ordering = ['order', '-created_at']
+        verbose_name = "Projekt"
+        verbose_name_plural = "Projekty"
+
+    def __str__(self):
+        return self.title
+
+    def get_technologies_list(self):
+        """Zwraca listę technologii jako Python list"""
+        return [tech.strip() for tech in self.technologies.split(',') if tech.strip()]
+
+
 class VideoPlaylist(models.Model):
     title = models.CharField(max_length=200, verbose_name="Tytuł kursu wideo")
     slug = models.SlugField(max_length=200, unique=True, blank=True, verbose_name="Slug")
