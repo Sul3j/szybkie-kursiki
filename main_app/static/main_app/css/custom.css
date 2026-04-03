@@ -5837,9 +5837,31 @@ body.dark-mode .scroll-progress-container {
 
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 30px;
     margin-top: 60px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 1200px) {
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.no-projects {
+    text-align: center;
+    padding: 50px;
+    color: var(--gray);
+    font-size: 1.1rem;
 }
 
 .project-card {
@@ -6035,41 +6057,78 @@ body.dark-mode .projects {
     background: var(--bg-secondary);
 }
 
-body.dark-mode .project-card {
-    background: rgba(30, 41, 59, 0.8);
+.dark-mode .project-card {
+    background: linear-gradient(145deg, rgba(26, 35, 50, 0.95), rgba(20, 28, 40, 0.9));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-color: rgba(67, 97, 238, 0.2);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-body.dark-mode .project-title {
+.dark-mode .project-card:hover {
+    border-color: rgba(67, 97, 238, 0.35);
+    box-shadow:
+        0 15px 35px rgba(67, 97, 238, 0.25),
+        0 5px 15px rgba(67, 97, 238, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .project-card-glow {
+    background: radial-gradient(circle at center, rgba(67, 97, 238, 0.2), transparent 60%);
+}
+
+.dark-mode .project-card-gradient {
+    background: linear-gradient(135deg,
+        rgba(67, 97, 238, 0.1) 0%,
+        transparent 50%,
+        rgba(114, 9, 183, 0.1) 100%);
+}
+
+.dark-mode .project-title {
     background: linear-gradient(135deg, #60a5fa, #a78bfa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-body.dark-mode .project-description {
+.dark-mode .project-description {
     color: var(--text-secondary);
 }
 
-body.dark-mode .project-badge {
-    background: rgba(67, 97, 238, 0.15);
-}
-
-body.dark-mode .tech-tag {
+.dark-mode .project-badge {
     background: rgba(67, 97, 238, 0.2);
     border-color: rgba(67, 97, 238, 0.3);
+}
+
+.dark-mode .project-badge span,
+.dark-mode .project-badge i {
+    color: #a5b4fc;
+}
+
+.dark-mode .tech-tag {
+    background: rgba(67, 97, 238, 0.2);
+    border-color: rgba(67, 97, 238, 0.3);
+    color: #a5b4fc;
+}
+
+.dark-mode .project-link {
+    background: rgba(67, 97, 238, 0.15);
+    border-color: rgba(67, 97, 238, 0.3);
+    color: #a5b4fc;
+}
+
+.dark-mode .project-link:hover {
+    background: rgba(67, 97, 238, 0.25);
+    border-color: rgba(67, 97, 238, 0.5);
 }
 
 /* Responsive styles for projects */
 @media (max-width: 768px) {
     .projects {
         padding: 80px 0;
-    }
-
-    .projects-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        margin-top: 40px;
     }
 
     .project-header {
