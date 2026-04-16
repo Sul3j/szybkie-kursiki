@@ -307,4 +307,136 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     initVideoSlider();
+
+    // Projects Slider
+    function initProjectsSlider() {
+        const slider = document.querySelector('.projects-slider');
+        if (!slider) return;
+
+        const track = slider.querySelector('.projects-track');
+        const prevBtn = document.querySelector('.projects-prev');
+        const nextBtn = document.querySelector('.projects-next');
+        const cards = track.querySelectorAll('.project-card');
+        const dotsContainer = document.querySelector('.projects-dots');
+
+        if (cards.length === 0) return;
+
+        const isMobile = window.innerWidth <= 768;
+
+        if (isMobile) {
+            // Mobile: touch scrolling with dots
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
+
+                // Show scroll hint animation on first visit
+                let hasScrolled = false;
+                if (cards.length > 1) {
+                    setTimeout(() => {
+                        if (!hasScrolled) {
+                            slider.scrollTo({
+                                left: 50,
+                                behavior: 'smooth'
+                            });
+                            setTimeout(() => {
+                                slider.scrollTo({
+                                    left: 0,
+                                    behavior: 'smooth'
+                                });
+                            }, 600);
+                        }
+                    }, 1000);
+                }
+
+                slider.addEventListener('scroll', () => {
+                    hasScrolled = true;
+                }, { once: true });
+
+                cards.forEach((card, index) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    if (index === 0) dot.classList.add('active');
+
+                    dot.addEventListener('click', () => {
+                        dot.style.transform = 'scale(0.9)';
+                        setTimeout(() => {
+                            dot.style.transform = '';
+                        }, 100);
+
+                        card.scrollIntoView({
+                            behavior: 'smooth',
+                            inline: 'center',
+                            block: 'nearest'
+                        });
+                    });
+
+                    dotsContainer.appendChild(dot);
+                });
+
+                // Update active dot on scroll
+                let scrollTimer;
+                slider.addEventListener('scroll', () => {
+                    clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(() => {
+                        const scrollLeft = slider.scrollLeft;
+                        const sliderCenter = scrollLeft + (slider.offsetWidth / 2);
+
+                        let activeIndex = 0;
+                        let minDistance = Infinity;
+
+                        cards.forEach((card, index) => {
+                            const cardLeft = card.offsetLeft;
+                            const cardCenter = cardLeft + (card.offsetWidth / 2);
+                            const distance = Math.abs(cardCenter - sliderCenter);
+
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                activeIndex = index;
+                            }
+                        });
+
+                        const dots = dotsContainer.querySelectorAll('.dot');
+                        dots.forEach((dot, index) => {
+                            dot.classList.toggle('active', index === activeIndex);
+                        });
+                    }, 50);
+                });
+            }
+        } else {
+            // Desktop: button navigation
+            if (prevBtn && nextBtn) {
+                let currentIndex = 0;
+                const slidesToShow = window.innerWidth >= 1024 ? 2 : 1;
+
+                function updateSlider() {
+                    const cardWidth = cards[0].offsetWidth;
+                    const gap = 30;
+                    const offset = -(currentIndex * (cardWidth + gap));
+                    track.style.transform = `translateX(${offset}px)`;
+
+                    prevBtn.disabled = currentIndex === 0;
+                    nextBtn.disabled = currentIndex >= cards.length - slidesToShow;
+                    prevBtn.style.opacity = currentIndex === 0 ? '0.3' : '1';
+                    nextBtn.style.opacity = currentIndex >= cards.length - slidesToShow ? '0.3' : '1';
+                }
+
+                prevBtn.addEventListener('click', () => {
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        updateSlider();
+                    }
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    if (currentIndex < cards.length - slidesToShow) {
+                        currentIndex++;
+                        updateSlider();
+                    }
+                });
+
+                updateSlider();
+            }
+        }
+    }
+
+    initProjectsSlider();
 });
