@@ -2570,6 +2570,22 @@ body.menu-open {
     width: 100%;
 }
 
+.footer-links {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+}
+
+.footer-links a {
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+}
+
 .heart {
     color: #ff6b6b;
     display: inline-block;
@@ -2915,6 +2931,18 @@ body.menu-open {
 
 .dark-mode .footer-author a::after {
     background: linear-gradient(90deg, #4895ef, #4cc9f0);
+}
+
+.dark-mode .footer-links {
+    color: var(--text-secondary);
+}
+
+.dark-mode .footer-links a {
+    color: var(--text-secondary);
+}
+
+.dark-mode .footer-links a:hover {
+    color: #4895ef;
 }
 
 .dark-mode .mission {

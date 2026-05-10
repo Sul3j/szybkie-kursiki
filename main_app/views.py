@@ -236,6 +236,12 @@ def blog_post_detail(request, slug):
     })
 
 
+def privacy_policy(request):
+    return render(request, 'main_app/privacy_policy.html', {
+        'is_home_page': False
+    })
+
+
 def _unique_slug(base_slug, model_class, exclude_id=None):
     slug = base_slug
     counter = 1

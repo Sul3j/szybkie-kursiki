@@ -1,0 +1,151 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'main_app/css/lesson_content.css' %}">
+<style>
+    .privacy-policy h2 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        color: var(--primary);
+    }
+    .privacy-policy h3 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .privacy-policy ul {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .privacy-policy li {
+        margin-bottom: 0.5rem;
+    }
+    .privacy-policy p {
+        margin-bottom: 1rem;
+        line-height: 1.7;
+    }
+    .privacy-policy .update-date {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="lesson-detail">
+    <div class="container">
+        <article class="lesson-content privacy-policy">
+            <h1>Polityka Prywatności</h1>
+            <p class="update-date">Ostatnia aktualizacja: 10 maja 2026</p>
+
+            <h2>1. Administrator danych</h2>
+            <p>
+                Administratorem danych osobowych jest Szymon Sulejczak, prowadzący serwis szybkie-kursiki.pl.
+                Kontakt z administratorem: <a href="mailto:kontakt@szybkie-kursiki.pl">kontakt@szybkie-kursiki.pl</a>
+            </p>
+
+            <h2>2. Jakie dane zbieramy</h2>
+            <p>
+                Serwis szybkie-kursiki.pl nie wymaga rejestracji ani logowania. Nie zbieramy bezpośrednio
+                danych osobowych takich jak imię, nazwisko czy adres e-mail.
+            </p>
+            <p>Automatycznie mogą być zbierane następujące dane techniczne:</p>
+            <ul>
+                <li>Adres IP (przez zewnętrzne usługi CDN)</li>
+                <li>Informacje o przeglądarce i systemie operacyjnym</li>
+                <li>Data i czas odwiedzin</li>
+            </ul>
+
+            <h2>3. Zewnętrzne usługi</h2>
+            <p>Serwis korzysta z następujących zewnętrznych usług, które mogą przetwarzać dane użytkowników:</p>
+
+            <h3>Google Fonts</h3>
+            <p>
+                Używamy czcionek dostarczanych przez Google Fonts. Podczas ładowania strony Twoja przeglądarka
+                łączy się z serwerami Google, co może wiązać się z przekazaniem adresu IP.
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+                    Polityka prywatności Google
+                </a>
+            </p>
+
+            <h3>CDN (Content Delivery Network)</h3>
+            <p>
+                Korzystamy z usług CDN (cdnjs.cloudflare.com, cdn.jsdelivr.net) do dostarczania bibliotek
+                JavaScript i CSS. Usługi te mogą przetwarzać adresy IP użytkowników w celu dostarczania treści.
+            </p>
+
+            <h3>YouTube</h3>
+            <p>
+                Serwis zawiera linki do filmów na YouTube. Po przejściu na YouTube, obowiązuje
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+                    Polityka prywatności Google/YouTube
+                </a>.
+            </p>
+
+            <h2>4. Pliki cookies</h2>
+            <p>
+                Serwis może używać technicznych plików cookies niezbędnych do prawidłowego działania strony
+                (np. cookies sesyjne). Nie używamy cookies do celów reklamowych ani śledzenia użytkowników.
+            </p>
+            <p>
+                Możesz zarządzać plikami cookies w ustawieniach swojej przeglądarki. Wyłączenie cookies
+                może wpłynąć na niektóre funkcje serwisu.
+            </p>
+
+            <h2>5. Cel przetwarzania danych</h2>
+            <p>Dane techniczne są przetwarzane w celu:</p>
+            <ul>
+                <li>Zapewnienia prawidłowego działania serwisu</li>
+                <li>Ochrony przed nadużyciami</li>
+                <li>Analizy problemów technicznych</li>
+            </ul>
+
+            <h2>6. Podstawa prawna</h2>
+            <p>
+                Podstawą prawną przetwarzania danych jest uzasadniony interes administratora
+                (art. 6 ust. 1 lit. f RODO) polegający na zapewnieniu prawidłowego funkcjonowania serwisu.
+            </p>
+
+            <h2>7. Twoje prawa</h2>
+            <p>Zgodnie z RODO przysługują Ci następujące prawa:</p>
+            <ul>
+                <li>Prawo dostępu do swoich danych</li>
+                <li>Prawo do sprostowania danych</li>
+                <li>Prawo do usunięcia danych ("prawo do bycia zapomnianym")</li>
+                <li>Prawo do ograniczenia przetwarzania</li>
+                <li>Prawo do sprzeciwu wobec przetwarzania</li>
+                <li>Prawo do wniesienia skargi do organu nadzorczego (UODO)</li>
+            </ul>
+            <p>
+                W celu realizacji swoich praw, skontaktuj się z administratorem:
+                <a href="mailto:kontakt@szybkie-kursiki.pl">kontakt@szybkie-kursiki.pl</a>
+            </p>
+
+            <h2>8. Bezpieczeństwo danych</h2>
+            <p>
+                Stosujemy odpowiednie środki techniczne i organizacyjne w celu ochrony danych,
+                w tym szyfrowanie połączenia (HTTPS).
+            </p>
+
+            <h2>9. Zmiany w polityce prywatności</h2>
+            <p>
+                Zastrzegamy sobie prawo do wprowadzania zmian w niniejszej polityce prywatności.
+                O wszelkich zmianach będziemy informować poprzez aktualizację daty na początku dokumentu.
+            </p>
+
+            <h2>10. Kontakt</h2>
+            <p>
+                W przypadku pytań dotyczących polityki prywatności lub przetwarzania danych osobowych,
+                prosimy o kontakt: <a href="mailto:kontakt@szybkie-kursiki.pl">kontakt@szybkie-kursiki.pl</a>
+            </p>
+
+            <div class="lesson-navigation" style="margin-top: 3rem;">
+                <a href="{% url 'home' %}" class="btn btn-outline">
+                    <i class="fas fa-home"></i> Wróć do strony głównej
+                </a>
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}
