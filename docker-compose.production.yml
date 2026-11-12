@@ -48,6 +48,8 @@ services:
     restart: unless-stopped
     expose:
       - 8000
+    ports:
+      - "127.0.0.1:8000:8000"
 
   nginx:
     image: nginx:alpine
@@ -64,6 +66,9 @@ services:
     restart: unless-stopped
     expose:
       - 80
+    ports:
+      # nginx hosta proxuje tu /static/ i /media/ (nie ma dostępu do katalogów wolumenów snap dockera)
+      - "127.0.0.1:8081:80"
 
 volumes:
   kursiki_db_data:
